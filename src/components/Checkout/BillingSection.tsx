@@ -19,6 +19,8 @@ function BillingSection({
   uniqueProducts,
   shippingCost,
   cartError,
+  isPlacingOrder,
+  isOrderPlaced,
 }: any) {
   const {
     name,
@@ -341,8 +343,8 @@ function BillingSection({
               described in our <a href="#">privacy policy</a> .
             </p>
             {cartError && <p style={{ color: "red" }}>{cartError}</p>}
-            <button type="submit" className="default-btn">
-              Place Your Order <span></span>
+            <button type="submit" className="default-btn" disabled={isPlacingOrder || isOrderPlaced}>
+              {isPlacingOrder ? "Processing..." : isOrderPlaced ? "Order Placed" : "Place Your Order"} <span></span>
             </button>
           </div>
         </div>

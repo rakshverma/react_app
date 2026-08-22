@@ -13,6 +13,14 @@ import {
   resetOrderStatusAction,
 } from "../store/actions/orderAction";
 import { getAllProductsAction } from "../store/actions/productAction";
+import { uploadUrl } from "../utils/axios";
+
+const getReceiptUrl = (receipt: any) => {
+  const url = receipt?.publicUrl || receipt?.receipt_url || receipt?.storagePath || "";
+  if (!url) return "";
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${uploadUrl}${`${url}`.replace(/^\/?uploads\/?/, "")}`;
+};
 
 const parsePriceRows = (value: any) => {
   if (!value) return [];
@@ -45,7 +53,7 @@ function Checkout() {
   const { userInfo, district } = useSelector((state: any) => state.user);
   const { cartDetails, shippingCost } = useSelector((state: any) => state.cart);
   const { productList } = useSelector((state: any) => state.product);
-  const { isSuccess, isError, orderDetails } = useSelector(
+  const { isSuccess, isError, orderDetails, isPlacingOrder, orderProgressStep } = useSelector(
     (state: any) => state.order
   );
   const pincode = localStorage.getItem("pincode");
@@ -77,11 +85,7 @@ function Checkout() {
     };
   }, []);
 
-  useEffect(() => {
-    if (isSuccess) {
-      navigate(`/thankyou/${orderDetails.refId}`);
-    }
-  }, [isSuccess, navigate]);
+  const receiptUrl = getReceiptUrl(orderDetails?.receipt);
 
   useEffect(() => {
     if (district) {
@@ -230,6 +234,8 @@ function Checkout() {
               uniqueProducts={uniqueProducts}
               shippingCost={shippingCost}
               cartError={(orderErrors as any).cart}
+              isPlacingOrder={isPlacingOrder}
+              isOrderPlaced={isSuccess}
             />
             <ProductsInfo
               cartDetails={cartDetails}
@@ -239,6 +245,37 @@ function Checkout() {
           </div>
         </div>
       </section>
+      {(isPlacingOrder || isSuccess) && (
+        <div className="order-processing-overlay" role="status" aria-live="polite">
+          <div className="order-processing-card">
+            {!isSuccess ? (
+              <>
+                <div className="order-processing-spinner"></div>
+                <h3>{orderProgressStep || "Processing Your Order"}</h3>
+                <p>Please wait while we confirm your cart and save your order.</p>
+              </>
+            ) : (
+              <>
+                <div className="order-success-icon">
+                  <i className="las la-check"></i>
+                </div>
+                <h3>Order Placed</h3>
+                <p>Your order #{orderDetails.refId} has been saved. You can download the invoice now.</p>
+                <div className="order-processing-actions">
+                  {receiptUrl && (
+                    <a href={receiptUrl} target="_blank" rel="noreferrer" className="default-btn">
+                      Download Invoice <span></span>
+                    </a>
+                  )}
+                  <button type="button" className="default-btn" onClick={() => navigate(`/thankyou/${orderDetails.refId}`)}>
+                    View Order <span></span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -1,10 +1,11 @@
-import { call, put, takeLatest, select, take } from "redux-saga/effects";
+import { call, put, takeLatest, select, take, delay } from "redux-saga/effects";
 import { request } from "../../utils/request";
 import { showLoader, hideLoader } from "./../actions/loaderAction";
 import {
   PLACE_ORDER,
   SET_ORDER_ERROR,
   SET_ORDER_DETAILS,
+  SET_ORDER_PROGRESS,
   SET_RESET_ORDER_STATUS,
   RESET_ORDER_STATUS,
   SET_USER_INFO,
@@ -34,15 +35,19 @@ const formatErrorData = (data: any) => {
 function* setOrderDetailsSaga(action: any): any {
   try {
     yield put(showLoader());
+    yield put({ type: SET_ORDER_PROGRESS, payload: { isPlacingOrder: true, step: "Processing Your Order" } });
     const cartId = localStorage.getItem("carthash");
     if (!cartId) {
       yield put({
         type: SET_ORDER_ERROR,
         payload: "Unable to place order. Check your cart.",
       });
+      yield put({ type: SET_ORDER_PROGRESS, payload: { isPlacingOrder: false, step: "" } });
       yield put(hideLoader());
       return;
     }
+    yield delay(500);
+    yield put({ type: SET_ORDER_PROGRESS, payload: { isPlacingOrder: true, step: "Saving The Details" } });
     const response = yield call(request, "post", "/order", {
       formData: action.payload.formData,
       cartId,
@@ -70,9 +75,14 @@ function* setOrderDetailsSaga(action: any): any {
 
     yield put(setEmptyCartAction());
     yield put(setUserInfoAction(userInfo || {}));
+    yield put({ type: SET_ORDER_PROGRESS, payload: { isPlacingOrder: true, step: "Preparing Invoice" } });
+    yield delay(500);
     yield put({
       type: SET_ORDER_DETAILS,
-      payload: { refId: response?.data?.data?.refId || "" },
+      payload: {
+        refId: response?.data?.data?.refId || "",
+        receipt: response?.data?.data?.receipt || null,
+      },
     });
     yield put(hideLoader());
   } catch (e: any) {
