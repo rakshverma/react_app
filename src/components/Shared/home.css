@@ -1,0 +1,4 @@
+.deliveryImage {
+    will-change: transform;
+    transform: translate3d(-33px, 0px, 0px);
+}
