@@ -120,14 +120,7 @@ function* getOrderListSaga(action: any): any {
     yield put(hideLoader());
   } catch (e) {
     yield put(hideLoader());
-    // yield put({
-    //   type: SET_ORDER_ERROR,
-    //   payload: "Unable to load order details. Please reload your page.",
-    // });
-    yield put({
-      type: SHOW_ERROR_MESSAGE,
-      payload: "Unable to load order details. Please reload your screen.",
-    });
+    yield put({ type: SET_USER_ORDER_LIST, payload: [] });
   }
 }
 
@@ -143,14 +136,7 @@ function* getOrderSuccessDataSaga(action: any): any {
     yield put(hideLoader());
   } catch (e) {
     yield put(hideLoader());
-    // yield put({
-    //   type: SET_ORDER_ERROR,
-    //   payload: "Unable to load order details. Please reload your page.",
-    // });
-    yield put({
-      type: SHOW_ERROR_MESSAGE,
-      payload: "Unable to load order details. Please reload your screen.",
-    });
+    yield put({ type: SET_ORDER_DATA, payload: [] });
   }
 }
 
@@ -169,14 +155,7 @@ function* addReviewSaga(action: any): any {
     yield put(hideLoader());
   } catch (e) {
     yield put(hideLoader());
-    // yield put({
-    //   type: SET_REVIEW_ERROR,
-    //   payload: "Unable to load reviews. Please reload your page.",
-    // });
-    yield put({
-      type: SHOW_ERROR_MESSAGE,
-      payload: "Unable to load reviews. Please reload your screen.",
-    });
+    yield put({ type: SET_REVIEW, payload: [] });
   }
 }
 

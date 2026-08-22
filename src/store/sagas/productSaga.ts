@@ -6,14 +6,10 @@ import {
   GET_ALL_PRODUCTS,
   SET_CATEGORY_INFO,
   CATEGORY_SUCCESS,
-  CATEGORY_ERROR,
   SET_PRODUCT_INFO,
   PRODUCT_SUCCESS,
-  PRODUCT_ERROR,
   GET_PRODUCT_REVIEW,
   SET_PRODUCT_REVIEW,
-  SHOW_SUCCESS_MESSAGE,
-  SHOW_ERROR_MESSAGE,
 } from "../actionTypes";
 
 function* getAllcategorySaga(): any {
@@ -25,14 +21,7 @@ function* getAllcategorySaga(): any {
     yield put(hideLoader());
   } catch (error: any) {
     console.log("get category ERROR = ", error);
-    const errMsg =
-      error?.response?.data?.message ||
-      "Something went wrong. Please try again.";
-    // yield put({ type: CATEGORY_ERROR, payload: errMsg });
-    yield put({
-      type: SHOW_ERROR_MESSAGE,
-      payload: errMsg,
-    });
+    yield put({ type: SET_CATEGORY_INFO, payload: [] });
     yield put(hideLoader());
   }
 }
@@ -51,14 +40,7 @@ function* getAllProductSaga(action: any): any {
     yield put(hideLoader());
   } catch (error: any) {
     console.log("get product ERROR = ", error);
-    const errMsg =
-      error?.response?.data?.message ||
-      "Something went wrong. Please try again.";
-    // yield put({ type: PRODUCT_ERROR, payload: errMsg });
-    yield put({
-      type: SHOW_ERROR_MESSAGE,
-      payload: errMsg,
-    });
+    yield put({ type: SET_PRODUCT_INFO, payload: [] });
     yield put(hideLoader());
   }
 }
@@ -75,15 +57,8 @@ function* getProductReviewOnIdSaga(action: any): any {
     yield put({ type: PRODUCT_SUCCESS, payload: true });
   } catch (error: any) {
     console.log("get product ERROR = ", error);
-    const errMsg =
-      error?.response?.data?.message ||
-      "Something went wrong. Please try again.";
+    yield put({ type: SET_PRODUCT_REVIEW, payload: [] });
     yield put(hideLoader());
-    yield put({
-      type: SHOW_ERROR_MESSAGE,
-      payload: errMsg,
-    });
-    // yield put({ type: PRODUCT_ERROR, payload: errMsg });
   }
 }
 

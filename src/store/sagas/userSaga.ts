@@ -31,7 +31,7 @@ function* userSaga(action: any): any {
     console.log("valid token ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
-      "Something went wrong. Please try again.";
+      "Please try again.";
     yield put(hideLoader());
     // yield put({ type: INVALID_USER, payload: errMsg });
     yield put({
@@ -73,7 +73,7 @@ function* getDistrictListSaga(action: any): any {
     console.log("valid token ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
-      "Something went wrong. Please try again.";
+      "Please try again.";
     yield put({
       type: SHOW_ERROR_MESSAGE,
       payload: errMsg,
@@ -104,7 +104,7 @@ function* addUserAddressSaga(action: any): any {
     console.log("valid token ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
-      "Something went wrong. Please try again.";
+      "Please try again.";
     yield put({ type: SET_USER_ADDRESS_ERROR, payload: errMsg });
     yield put({
       type: SHOW_ERROR_MESSAGE,
@@ -152,7 +152,7 @@ function* updateUserAccountSaga(action: any): any {
     console.log("valid token ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
-      "Something went wrong. Please try again.";
+      "Please try again.";
     yield put({ type: SET_USER_ADDRESS_ERROR, payload: errMsg });
     yield put({
       type: SHOW_ERROR_MESSAGE,
