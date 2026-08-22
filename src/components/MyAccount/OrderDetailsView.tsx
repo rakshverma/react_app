@@ -4,6 +4,11 @@ import moment from "moment";
 import { Link, useLocation } from "react-router-dom";
 import { uploadUrl } from "../../utils/axios";
 
+const getReceiptUrl = (receiptUrl: string) => {
+  if (!receiptUrl) return "";
+  return `${uploadUrl}${receiptUrl.replace(/^\/?uploads\/?/, "")}`;
+};
+
 function OrderDetailsView() {
   const dispatch = useDispatch();
   const { orderList } = useSelector((state: any) => state.order);
@@ -13,7 +18,7 @@ function OrderDetailsView() {
   console.log("refId = ", refId);
   let product: any = [];
   if (orderList.length && refId) {
-    product = orderList.filter((obj: any) => obj.id + 1000 == refId);
+    product = orderList.filter((obj: any) => Number(obj.id) + 1000 === Number(refId));
   }
 
   const details = () => {
@@ -27,7 +32,9 @@ function OrderDetailsView() {
         ref_no,
         total_price,
         status,
+        receipt_url,
       } = product[0];
+      const receiptUrl = getReceiptUrl(receipt_url);
       return (
         <div className="row">
           <div className="col-md-6">
@@ -60,11 +67,19 @@ function OrderDetailsView() {
                 {moment(inserted_at).format("MMMM D, YYYY")}
               </samp>{" "}
               <br /> Total -{" "}
-              <samp className="text-muted">₹{`${total_price.toFixed(2)}`}</samp>{" "}
+              <samp className="text-muted">₹{`${Number(total_price).toFixed(2)}`}</samp>{" "}
               <br /> Payment Method -{" "}
               <samp className="text-muted">
                 Scan QR on Delivery / Pay By Cash
               </samp>{" "}
+              {receiptUrl && (
+                <>
+                  <br /> Invoice -{" "}
+                  <a href={receiptUrl} target="_blank" rel="noreferrer">
+                    View Invoice
+                  </a>
+                </>
+              )}
             </p>
           </div>
         </div>
@@ -91,7 +106,7 @@ function OrderDetailsView() {
             </thead>
 
             <tbody>
-              {orderList[0].itemList.map((item: any, i: number) => {
+              {product[0].itemList.map((item: any, i: number) => {
                 const {
                   name,
                   quantity,
@@ -121,7 +136,7 @@ function OrderDetailsView() {
                     </td>
                     <td className="text-center">{delivery_date}</td>
                     <td className="text-center">{status}</td>
-                    <td className="text-end">₹{price * count.toFixed(2)}</td>
+                    <td className="text-end">₹{(Number(price) * Number(count)).toFixed(2)}</td>
                   </tr>
                 );
               })}
@@ -133,7 +148,7 @@ function OrderDetailsView() {
                 <td></td>
                 <td></td>
                 <td className="text-end">
-                  ₹{(total_price - shipping_cost).toFixed(2)}
+                  ₹{(Number(total_price) - Number(shipping_cost)).toFixed(2)}
                 </td>
               </tr>
               <tr>
@@ -145,7 +160,7 @@ function OrderDetailsView() {
                 <td className="text-end">
                   {" "}
                   ₹
-                  {shipping_cost > 0 ? shipping_cost.toFixed(2) : shipping_cost}
+                  {Number(shipping_cost) > 0 ? Number(shipping_cost).toFixed(2) : Number(shipping_cost)}
                 </td>
               </tr>
               <tr>
@@ -153,7 +168,7 @@ function OrderDetailsView() {
                 <td></td>
                 <td></td>
                 <td className="text-end text-dark fw-bold">
-                  ₹{total_price.toFixed(2)}
+                  ₹{Number(total_price).toFixed(2)}
                 </td>
               </tr>
             </tfoot>

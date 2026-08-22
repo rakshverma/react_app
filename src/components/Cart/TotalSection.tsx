@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function TotalSection({ cartDetails, shippingCost }: any) {
+function TotalSection({ cartDetails, shippingCost, hasUnavailableItems }: any) {
   console.log("shippingCost = ", shippingCost);
   let subTotal = 0;
   if (cartDetails.length) {
     cartDetails.forEach((item: any) => {
-      subTotal += item.price * item.count;
+      subTotal += Number(item.price) * Number(item.count);
     });
   }
   return (
@@ -18,19 +18,26 @@ function TotalSection({ cartDetails, shippingCost }: any) {
               <span>Subtotal:</span>₹{subTotal.toFixed(2)}
             </li>
             <li>
-              <span>Shipping:</span>₹{shippingCost > 0 ? shippingCost.toFixed(2) : shippingCost}
+              <span>Shipping:</span>₹{Number(shippingCost) > 0 ? Number(shippingCost).toFixed(2) : Number(shippingCost)}
             </li>
             <li>
-              <span>Total:</span>₹{(subTotal + shippingCost).toFixed(2)}
+              <span>Total:</span>₹{(subTotal + Number(shippingCost)).toFixed(2)}
             </li>
             <li>
               <Link to={"/products"} className="default-btn">
                 Continue Shopping <span></span>
               </Link>
-              <Link to={"/checkout"} className="default-btn">
-                Proceed to checkout
-                <span></span>
-              </Link>
+              {hasUnavailableItems ? (
+                <span className="default-btn" style={{ opacity: 0.6, cursor: "not-allowed" }}>
+                  Remove unavailable items
+                  <span></span>
+                </span>
+              ) : (
+                <Link to={"/checkout"} className="default-btn">
+                  Proceed to checkout
+                  <span></span>
+                </Link>
+              )}
             </li>
           </ul>
         </div>

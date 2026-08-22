@@ -23,15 +23,26 @@ import {
 import { setUserInfoAction } from "./../actions/userAction";
 import { setEmptyCartAction } from "../actions/cartAction";
 
+const formatErrorData = (data: any) => {
+  if (!data) return "";
+  if (Array.isArray(data)) return data.filter(Boolean).join(", ");
+  if (typeof data === "string") return data;
+  if (typeof data === "object") return Object.values(data).filter(Boolean).join(", ");
+  return `${data}`;
+};
+
 function* setOrderDetailsSaga(action: any): any {
   try {
     yield put(showLoader());
     const cartId = localStorage.getItem("carthash");
-    if (!cartId)
+    if (!cartId) {
       yield put({
         type: SET_ORDER_ERROR,
         payload: "Unable to place order. Check your cart.",
       });
+      yield put(hideLoader());
+      return;
+    }
     const response = yield call(request, "post", "/order", {
       formData: action.payload.formData,
       cartId,
@@ -67,30 +78,11 @@ function* setOrderDetailsSaga(action: any): any {
   } catch (e: any) {
     console.log("error = ", e);
     yield put(hideLoader());
-    const errMsg =
-      e?.response?.data?.data && e?.response?.data?.message
-        ? `${e.response.data.message}. ${e.response.data.data.toString(",")}`
-        : e?.response?.data?.message
-        ? `${e.response.data.message}`
-        : "Unable to place order. Please reload your page.";
-    if (e?.response?.data?.data && e?.response?.data?.message) {
-      yield put({
-        type: SET_ORDER_ERROR,
-        payload: `${e.response.data.message}. ${e.response.data.data.toString(
-          ","
-        )}`,
-      });
-    } else if (e?.response?.data?.message) {
-      yield put({
-        type: SET_ORDER_ERROR,
-        payload: `${e.response.data.message}`,
-      });
-    } else {
-      yield put({
-        type: SET_ORDER_ERROR,
-        payload: "Unable to place order. Please reload your page.",
-      });
-    }
+    const errorData = formatErrorData(e?.response?.data?.data);
+    const errMsg = e?.response?.data?.message
+      ? `${e.response.data.message}${errorData ? ` ${errorData}` : ""}`
+      : "Unable to place order. Please reload your page.";
+    yield put({ type: SET_ORDER_ERROR, payload: errMsg });
 
     yield put({
       type: SHOW_ERROR_MESSAGE,

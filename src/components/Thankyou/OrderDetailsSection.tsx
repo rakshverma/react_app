@@ -1,12 +1,26 @@
 import React from "react";
+import { uploadUrl } from "../../utils/axios";
+
+const getReceiptUrl = (receiptUrl: string) => {
+  if (!receiptUrl) return "";
+  return `${uploadUrl}${receiptUrl.replace(/^\/?uploads\/?/, "")}`;
+};
 
 function OrderDetailsSection({ orderList }: any) {
   const details = () => {
     if (orderList.length) {
       const { total_price, shipping_address, billing_address, landmark, shipping_cost } =
         orderList[0];
+      const receiptUrl = getReceiptUrl(orderList[0].receipt_url);
       return (
         <>
+          {receiptUrl && (
+            <div className="mb-3 text-end">
+              <a className="default-btn" href={receiptUrl} target="_blank" rel="noreferrer">
+                View Invoice <span></span>
+              </a>
+            </div>
+          )}
           <table className="table">
             <thead>
               <tr>
@@ -36,7 +50,7 @@ function OrderDetailsSection({ orderList }: any) {
                       </p>
                     </td>
                     <td className="text-end">{delivery_date}</td>
-                    <td className="text-end">₹{price * count.toFixed(2)}</td>
+                    <td className="text-end">₹{(Number(price) * Number(count)).toFixed(2)}</td>
                   </tr>
                 );
               })}
@@ -46,20 +60,20 @@ function OrderDetailsSection({ orderList }: any) {
               <tr>
                 <td className="text-start">Subtotal:</td>
                 <td></td>
-                <td className="text-end">₹{(total_price-shipping_cost).toFixed(2)}</td>
+                <td className="text-end">₹{(Number(total_price) - Number(shipping_cost)).toFixed(2)}</td>
               </tr>
               <tr>
                 <td className="text-start">
                   Shipping: <small>(via Home Delivery) </small>
                 </td>
                 <td></td>
-                <td className="text-end"> ₹{shipping_cost > 0 ? shipping_cost.toFixed(2) : shipping_cost}</td>
+                <td className="text-end"> ₹{Number(shipping_cost) > 0 ? Number(shipping_cost).toFixed(2) : Number(shipping_cost)}</td>
               </tr>
               <tr>
                 <td className="text-start text-dark fw-bold">Total:</td>
                 <td></td>
                 <td className="text-end text-dark fw-bold">
-                  ₹{total_price.toFixed(2)}
+                  ₹{Number(total_price).toFixed(2)}
                 </td>
               </tr>
             </tfoot>

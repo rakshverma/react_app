@@ -12,12 +12,39 @@ import {
   placeUserOrderAction,
   resetOrderStatusAction,
 } from "../store/actions/orderAction";
+import { getAllProductsAction } from "../store/actions/productAction";
+
+const parsePriceRows = (value: any) => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const getUnavailableCartItems = (cartDetails: any[], productList: any[]) => {
+  return cartDetails.filter((cartItem: any) => {
+    const product = productList.find((item: any) => `${item.id}` === `${cartItem.productId}`);
+    if (!product || Number(product.is_available) !== 1 || `${product.franchise_id}` !== `${cartItem.franchiseId}`) return true;
+    return !parsePriceRows(product.quantity_wise_price).some((priceRow: any) => {
+      return (
+        Number(priceRow.quantity) === Number(cartItem.quantity) &&
+        `${priceRow.unit}` === `${cartItem.unit}` &&
+        Number(priceRow.price) === Number(cartItem.price)
+      );
+    });
+  });
+};
 
 function Checkout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo, district } = useSelector((state: any) => state.user);
   const { cartDetails, shippingCost } = useSelector((state: any) => state.cart);
+  const { productList } = useSelector((state: any) => state.product);
   const { isSuccess, isError, orderDetails } = useSelector(
     (state: any) => state.order
   );
@@ -76,6 +103,7 @@ function Checkout() {
     if (!cartDetails.length) {
       dispatch(getCartDetailsAction());
     }
+    dispatch(getAllProductsAction(pincode));
     dispatch(getDistrictOnPinCodeAction(pincode));
   }, [dispatch, pincode]);
 
@@ -133,12 +161,16 @@ function Checkout() {
     if (pincode && !pinRegex.test(pincode))
       errors.pincode = "Please enter valid pincode";
 
-    Object.keys(orderDeliveryDates).forEach((item: any) => {
-      if (orderDeliveryDates[item] == "") {
+    uniqueProducts.forEach((item: any) => {
+      if (!orderDeliveryDates[item.productId]) {
         errors.deliveryDate = "Please select delivery dates for all the items";
-        return;
       }
     });
+
+    const unavailableItems = getUnavailableCartItems(cartDetails, productList);
+    if (unavailableItems.length) {
+      errors.cart = `${unavailableItems.map((item: any) => item.name || "An item").join(", ")} is not available for your selected pincode. Please remove it from cart.`;
+    }
 
     return errors;
   };
@@ -197,6 +229,7 @@ function Checkout() {
               updateorderDeliveryDate={updateorderDeliveryDate}
               uniqueProducts={uniqueProducts}
               shippingCost={shippingCost}
+              cartError={(orderErrors as any).cart}
             />
             <ProductsInfo
               cartDetails={cartDetails}

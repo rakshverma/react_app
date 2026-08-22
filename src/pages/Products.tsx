@@ -26,7 +26,7 @@ function Products() {
     }
     dispatch(getAllCategoryAction());
     dispatch(getAllProductsAction(pinCode));
-  }, [dispatch]);
+  }, [dispatch, pinCode, navigationState?.updatePincode]);
 
   const updateFilter = (category: any) => {
     console.log("category = ", category);

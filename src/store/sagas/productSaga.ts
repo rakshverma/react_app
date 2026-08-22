@@ -30,6 +30,11 @@ function* getAllProductSaga(action: any): any {
   try {
     yield put(showLoader());
     const pinCode = encodeURIComponent(`${action.payload || ""}`.trim());
+    if (!pinCode) {
+      yield put({ type: SET_PRODUCT_INFO, payload: [] });
+      yield put(hideLoader());
+      return;
+    }
     const response = yield call(
       request,
       "get",

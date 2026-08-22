@@ -5,7 +5,7 @@ function ProductsInfo({ cartDetails, shippingCost, orderDeliveryDates }: any) {
   let calculateShipping = 0;
   if (cartDetails.length) {
     cartDetails.forEach((item: any) => {
-      subTotal += item.price * item.count;
+      subTotal += Number(item.price) * Number(item.count);
     });
   }
   if(Object.keys(orderDeliveryDates).length > 0) {
@@ -42,7 +42,7 @@ function ProductsInfo({ cartDetails, shippingCost, orderDeliveryDates }: any) {
                   </td>
                   <td>{item.count}</td>
                   <td className="pe-3 text-dark">
-                    ₹{(item.price * item.count).toFixed(2)}
+                ₹{(Number(item.price) * Number(item.count)).toFixed(2)}
                   </td>
                 </tr>
               );

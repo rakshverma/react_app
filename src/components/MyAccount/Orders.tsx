@@ -3,6 +3,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { uploadUrl } from "../../utils/axios";
+
+const getReceiptUrl = (receiptUrl: string) => {
+  if (!receiptUrl) return "";
+  return `${uploadUrl}${receiptUrl.replace(/^\/?uploads\/?/, "")}`;
+};
 
 function Orders() {
   const dispatch = useDispatch();
@@ -48,7 +54,7 @@ function Orders() {
                     {item.itemList.map((obj: any) => {
                       return (
                         <>
-                          <span>₹{obj.price * obj.count.toFixed(2)}</span>
+                          <span>₹{(Number(obj.price) * Number(obj.count)).toFixed(2)}</span>
                           <br />
                         </>
                       );
@@ -94,9 +100,17 @@ function Orders() {
                   <td className="text-start">
                     <Link to={"/myaccount/reviews"}>Review</Link>
                     <br />
-                    <Link to={`/myaccount/details?ref=${id + 1000}`}>
+                    <Link to={`/myaccount/details?ref=${Number(id) + 1000}`}>
                       View Details
                     </Link>
+                    {item.receipt_url && (
+                      <>
+                        <br />
+                        <a href={getReceiptUrl(item.receipt_url)} target="_blank" rel="noreferrer">
+                          View Invoice
+                        </a>
+                      </>
+                    )}
                   </td>
                 </tr>
               );

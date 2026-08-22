@@ -18,6 +18,7 @@ function BillingSection({
   updateorderDeliveryDate,
   uniqueProducts,
   shippingCost,
+  cartError,
 }: any) {
   const {
     name,
@@ -194,7 +195,6 @@ function BillingSection({
                 className="form-control"
                 placeholder="District"
                 value={district}
-                disabled={district ? true : false}
                 onChange={(e) => {
                   updateFormData("district", e.target.value);
                 }}
@@ -340,6 +340,7 @@ function BillingSection({
               your experience throughout this website, and for other purposes
               described in our <a href="#">privacy policy</a> .
             </p>
+            {cartError && <p style={{ color: "red" }}>{cartError}</p>}
             <button type="submit" className="default-btn">
               Place Your Order <span></span>
             </button>

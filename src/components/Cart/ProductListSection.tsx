@@ -22,9 +22,13 @@ const getProductImage = (data: string) => {
 function ProductListSection({
   cartDetails,
   productList,
+  unavailableItems,
   removeCartItem,
   updateQuantityCount,
 }: any) {
+  const unavailableKeys = new Set(
+    (unavailableItems || []).map((item: any) => `${item.productId}-${item.quantity}-${item.unit}-${item.franchiseId}`)
+  );
   const getOptions = () => {
     const options = [];
     for (let i = 1; i <= 20; i++) {
@@ -41,6 +45,8 @@ function ProductListSection({
       <CartListHeaders />
       {cartDetails.length > 0 &&
         cartDetails.map((item: any, index: number) => {
+          const itemKey = `${item.productId}-${item.quantity}-${item.unit}-${item.franchiseId}`;
+          const unavailable = unavailableKeys.has(itemKey);
           return (
             <div key={`cart_item_${index}`} className="row cart-body pb-30">
               <div className="col-lg-6">
@@ -51,6 +57,11 @@ function ProductListSection({
                       <a href="shop-details.html">{item.name}</a>
                     </h3>
                     <p>Weight : {`${item.quantity}${item.unit}`}</p>
+                    {unavailable && (
+                      <p className="mb-0" style={{ color: "red" }}>
+                        Not available for your selected pincode
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -74,12 +85,12 @@ function ProductListSection({
               </div>
               <div className="col-3 col-lg-1">
                 <div className="cart-item">
-                  <p>₹{item.price.toFixed(2)}</p>
+                  <p>₹{Number(item.price).toFixed(2)}</p>
                 </div>
               </div>
               <div className="col-3 col-lg-1">
                 <div className="cart-item">
-                  <p>₹{(item.price * item.count).toFixed(2)}</p>
+                  <p>₹{(Number(item.price) * Number(item.count)).toFixed(2)}</p>
                 </div>
               </div>
               <div className="col-2 col-lg-1">
