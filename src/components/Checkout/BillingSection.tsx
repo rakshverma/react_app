@@ -272,24 +272,9 @@ function BillingSection({
               ></textarea>
             </div>
           </div>
-          {Object.keys(userInfo).length === 0 && (
-            <ul className="mt-20 mb-20">
-              <li>
-                <input
-                  type="checkbox"
-                  id="option-3"
-                  name="selector"
-                  checked
-                  disabled
-                  onChange={() => {}}
-                />
-                <label style={{ marginLeft: 10 }}>Create an account</label>
-              </li>
-            </ul>
-          )}
         </div>
         <div className="checkout-form-wrap mb-10">
-          <h2>Select Delivery Dates</h2>
+          <h2>Select Delivery Date</h2>
           <table className="table cart-total mb-0">
             <tbody>
               {uniqueProducts.map((item: any, i: number) => {
@@ -298,24 +283,25 @@ function BillingSection({
                     <td className="text-start ps-3">
                       <span className="text-dark">{item.name}</span>
                     </td>
-                    <td className="pe-3 text-dark">
-                      <div className="form-field">
-                        <EnabledDatePicker
-                          deliveryDay={item.delevery_days}
-                          productId={item.productId}
-                          onDateChange={(date: any) => {
-                            console.log("FIRSTTIME DATE ID = ", item.productId);
-                            console.log("FIRSTTIME DATE DATE = ", date);
-                            updateorderDeliveryDate(item.productId, date);
-                          }}
-                          orderDeliveryDates={orderDeliveryDates}
-                          key={`picker_${item.productId}`}
-                        />
-                      </div>
-                    </td>
+                    <td className="pe-3 text-dark">{item.quantity}{item.unit} x {item.count}</td>
                   </tr>
                 );
               })}
+              <tr>
+                <td className="text-start ps-3">
+                  <span className="text-dark">Delivery Date</span>
+                </td>
+                <td className="pe-3 text-dark">
+                  <div className="form-field">
+                    <EnabledDatePicker
+                      products={uniqueProducts}
+                      onDateChange={(date: any) => {
+                        updateorderDeliveryDate("order", date);
+                      }}
+                    />
+                  </div>
+                </td>
+              </tr>
               {orderErrors.deliveryDate && (
                 <p style={{ color: "red" }}>{orderErrors.deliveryDate}</p>
               )}
@@ -354,15 +340,12 @@ function BillingSection({
 }
 
 function EnabledDatePicker({
-  deliveryDay,
-  productId,
+  products,
   onDateChange,
-  orderDeliveryDates,
 }: any) {
-  const filterDates = (date: any, deliveryDay: any) => {
-    // Disable dates that are not Monday, Wednesday, or Friday
+  const filterDates = (date: any, deliveryDayLists: any) => {
     const day = date.toLocaleString("en-US", { weekday: "long" });
-    return deliveryDay.includes(day);
+    return deliveryDayLists.every((deliveryDay: string[]) => deliveryDay.includes(day));
   };
   const parseDeliveryDay = (deliveryDay: any) => {
     try {
@@ -371,20 +354,14 @@ function EnabledDatePicker({
       return [];
     }
   };
-  const daysToEnable = parseDeliveryDay(deliveryDay);
+  const daysToEnable = products.map((item: any) => parseDeliveryDay(item.delevery_days));
   const [firstEnabledDate, setFirstEnabledDate] = useState<any>(null);
   let today = new Date();
   let minDate = today.setDate(today.getDate() + 1);
   useEffect(() => {
-    let currentDate = new Date(today);
-    while (!filterDates(currentDate, daysToEnable) && daysToEnable.length) {
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    // onDateChange(currentDate);
-    // setFirstEnabledDate(currentDate);
     onDateChange("");
     setFirstEnabledDate("");
-  }, [deliveryDay]);
+  }, [products]);
 
   return (
     <DatePicker
@@ -399,7 +376,7 @@ function EnabledDatePicker({
       customInput={
         <input
           type="text"
-          id={productId}
+          id="deliveryDate"
           defaultValue={firstEnabledDate}
           name="deliveryDay"
           className="form-control"

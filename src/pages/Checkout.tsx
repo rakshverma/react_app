@@ -128,9 +128,14 @@ function Checkout() {
   const updateorderDeliveryDate = (id: any, value: any) => {
     console.log("date value = ", value);
     console.log("date id = ", id);
+    const formattedDate = value ? formatDate(value) : "";
+    const nextDates: any = {};
+    uniqueProducts.forEach((item: any) => {
+      nextDates[item.productId] = formattedDate;
+    });
     setOrderDeliveryDates((state: any) => ({
       ...state,
-      [id]: value ? formatDate(value) : "",
+      ...nextDates,
     }));
   };
 
@@ -191,15 +196,7 @@ function Checkout() {
       } else {
         const isPincodeChanged = pincode === userInfo.pin_code;
         let shipping_cost = 0;
-        if (Object.keys(orderDeliveryDates).length > 0) {
-          let temp: any = [];
-          Object.keys(orderDeliveryDates).forEach((item: any) => {
-            if (!temp.includes(orderDeliveryDates[item])) {
-              shipping_cost += shippingCost;
-              temp.push(orderDeliveryDates[item]);
-            }
-          });
-        }
+        if (Object.values(orderDeliveryDates).some(Boolean)) shipping_cost = shippingCost;
         dispatch(
           placeUserOrderAction(
             formData,
