@@ -8,14 +8,8 @@ function ProductsInfo({ cartDetails, shippingCost, orderDeliveryDates }: any) {
       subTotal += Number(item.price) * Number(item.count);
     });
   }
-  if(Object.keys(orderDeliveryDates).length > 0) {
-    let temp: any = [];
-    Object.keys(orderDeliveryDates).forEach((item: any) => {
-      if(!temp.includes(orderDeliveryDates[item])) {
-        calculateShipping += shippingCost;
-        temp.push(orderDeliveryDates[item]);
-      }
-    })
+  if (Object.values(orderDeliveryDates).some(Boolean)) {
+    calculateShipping = Number(shippingCost || 0);
   }
   return (
     <div className="col-lg-4 sm-padding">

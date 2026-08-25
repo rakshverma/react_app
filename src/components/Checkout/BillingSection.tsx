@@ -345,7 +345,9 @@ function EnabledDatePicker({
 }: any) {
   const filterDates = (date: any, deliveryDayLists: any) => {
     const day = date.toLocaleString("en-US", { weekday: "long" });
-    return deliveryDayLists.every((deliveryDay: string[]) => deliveryDay.includes(day));
+    const configuredDeliveryDays = deliveryDayLists.filter((deliveryDay: string[]) => deliveryDay.length > 0);
+    if (!configuredDeliveryDays.length) return true;
+    return configuredDeliveryDays.some((deliveryDay: string[]) => deliveryDay.includes(day));
   };
   const parseDeliveryDay = (deliveryDay: any) => {
     try {

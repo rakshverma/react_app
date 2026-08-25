@@ -33,6 +33,8 @@ const parsePriceRows = (value: any) => {
   }
 };
 
+const normalizeUnit = (unit: any) => `${unit || ""}`.trim().toLowerCase();
+
 const getUnavailableCartItems = (cartDetails: any[], productList: any[]) => {
   return cartDetails.filter((cartItem: any) => {
     const product = productList.find((item: any) => `${item.id}` === `${cartItem.productId}`);
@@ -40,7 +42,7 @@ const getUnavailableCartItems = (cartDetails: any[], productList: any[]) => {
     return !parsePriceRows(product.quantity_wise_price).some((priceRow: any) => {
       return (
         Number(priceRow.quantity) === Number(cartItem.quantity) &&
-        `${priceRow.unit}` === `${cartItem.unit}` &&
+        normalizeUnit(priceRow.unit) === normalizeUnit(cartItem.unit) &&
         Number(priceRow.price) === Number(cartItem.price)
       );
     });
