@@ -21,13 +21,15 @@ const parsePriceRows = (value: any) => {
   }
 };
 
+const normalizeUnit = (unit: any) => `${unit || ""}`.trim().toLowerCase();
+
 const isCartItemAvailable = (cartItem: any, productList: any[]) => {
   const product = productList.find((item: any) => `${item.id}` === `${cartItem.productId}`);
   if (!product || Number(product.is_available) !== 1 || `${product.franchise_id}` !== `${cartItem.franchiseId}`) return false;
   return parsePriceRows(product.quantity_wise_price).some((priceRow: any) => {
     return (
       Number(priceRow.quantity) === Number(cartItem.quantity) &&
-      `${priceRow.unit}` === `${cartItem.unit}` &&
+      normalizeUnit(priceRow.unit) === normalizeUnit(cartItem.unit) &&
       Number(priceRow.price) === Number(cartItem.price)
     );
   });

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { setCartItemAction } from "../../store/actions/cartAction";
 import StarRatingReadOnly from "../Shared/StarRatingReadOnly";
 
@@ -13,7 +13,6 @@ function DetailsSection({
   const dispatch = useDispatch();
   const [selectedQuantity, setSelectedQuantity] = useState(0);
   const [quantityCount, setQuantityCount] = useState<any>(1);
-  const [error, setError] = useState("");
 
   const handleAddToCart = () => {
     const cartItem = {
@@ -76,7 +75,7 @@ function DetailsSection({
               <>
                 <div className="mb-3 d-md-flex">
                   <div className="my-auto me-2" style={{ fontWeight: "bold" }}>
-                    Weight -{" "}
+                    Quantity -{" "}
                   </div>
                   {productWeights.map((item: any, index: number) => {
                     return (

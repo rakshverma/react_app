@@ -19,15 +19,17 @@ function ContactFormSection() {
               </div>
               <ul className="contact-details">
                 <li>
-                  <i className="fas fa-map-marker-alt"></i>Flat no 4E, Ramas
-                  Garden, Sanjoal, <br /> near Oil Mill, Kharagpur 721301
+                  <i className="fas fa-map-marker-alt"></i>Shanti Bazar,
+                  Barrackpur, <br /> West Bengal 700120
                 </li>
                 <li>
                   <i className="fas fa-envelope"></i>info@jhatkabyte.com
                 </li>
                 <li>
-                  <i className="fas fa-phone"></i>+91 89619 94324 <br />
-                  +91 89619 94324
+                  <i className="fas fa-phone"></i>+91 6289560934 <br />
+                  +91 9239031756 <br />
+                  +91 89619 94324 <br />
+                  +91 79083 87963 (Bardhaman)
                 </li>
               </ul>
             </div>

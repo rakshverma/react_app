@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
@@ -31,7 +31,6 @@ function BillingSection({
     landmark,
     street,
     pincode,
-    deliveryDay,
     additionalNote,
   } = formData;
   const dispatch = useDispatch();
@@ -39,7 +38,6 @@ function BillingSection({
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<LoginFormData>();
   const [isShowLogin, setIsShowLogin] = useState(false);
 
@@ -356,14 +354,15 @@ function EnabledDatePicker({
       return [];
     }
   };
-  const daysToEnable = products.map((item: any) => parseDeliveryDay(item.delevery_days));
+  const deliveryDayKey = products.map((item: any) => `${item.productId}:${item.delevery_days || ""}`).join("|");
+  const daysToEnable = useMemo(() => products.map((item: any) => parseDeliveryDay(item.delevery_days)), [deliveryDayKey]);
   const [firstEnabledDate, setFirstEnabledDate] = useState<any>(null);
   let today = new Date();
   let minDate = today.setDate(today.getDate() + 1);
   useEffect(() => {
     onDateChange("");
-    setFirstEnabledDate("");
-  }, [products]);
+    setFirstEnabledDate(null);
+  }, [deliveryDayKey]);
 
   return (
     <DatePicker
@@ -379,10 +378,9 @@ function EnabledDatePicker({
         <input
           type="text"
           id="deliveryDate"
-          defaultValue={firstEnabledDate}
           name="deliveryDay"
           className="form-control"
-          placeholder="Day of Week for delivery"
+          placeholder="Delivery date"
           readOnly={true}
         />
       }

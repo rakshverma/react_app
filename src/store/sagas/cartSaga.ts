@@ -32,6 +32,8 @@ import {
   SHOW_ERROR_MESSAGE,
 } from "../actionTypes";
 
+const normalizeUnit = (unit: any) => `${unit || ""}`.trim().toLowerCase();
+
 function* setCartItemSaga(action: any): any {
   yield put({ type: RESET_CART_ERROR, payload: false });
   try {
@@ -50,7 +52,7 @@ function* setCartItemSaga(action: any): any {
       (item: any) =>
         item.productId === action.payload.productId &&
         item.quantity === parseInt(action.payload.details.quantity) &&
-        item.unit === action.payload.details.unit
+        normalizeUnit(item.unit) === normalizeUnit(action.payload.details.unit)
     );
     console.log("existingIndex = ", existingIndex);
     if (existingIndex !== -1) {
@@ -73,7 +75,7 @@ function* setCartItemSaga(action: any): any {
         userId: userInfo?.id || null,
         franchiseId: action.payload.franchiseId,
         quantity: parseFloat(action.payload.details.quantity),
-        unit: action.payload.details.unit,
+        unit: normalizeUnit(action.payload.details.unit),
         price: parseFloat(action.payload.details.price),
         count: action.payload.count,
       };
@@ -166,7 +168,7 @@ function* removeCartItemSaga(action: any): any {
       if (
         item.productId === action.payload.productId &&
         item.quantity === parseFloat(action.payload.quantity) &&
-        item.unit === action.payload.unit
+        normalizeUnit(item.unit) === normalizeUnit(action.payload.unit)
       )
         return false;
       else return true;
@@ -200,7 +202,7 @@ function* updateCartItemSaga(action: any): any {
       (item: any) =>
         item.productId === action.payload.item.productId &&
         item.quantity === parseFloat(action.payload.item.quantity) &&
-        item.unit === action.payload.item.unit
+        normalizeUnit(item.unit) === normalizeUnit(action.payload.item.unit)
     );
     if (existingIndex !== -1) {
       cartDetails[existingIndex].count = action.payload.count;
@@ -209,7 +211,7 @@ function* updateCartItemSaga(action: any): any {
         if (
           item.productId === action.payload.item.productId &&
           item.quantity === parseFloat(action.payload.item.quantity) &&
-          item.unit === action.payload.item.unit
+          normalizeUnit(item.unit) === normalizeUnit(action.payload.item.unit)
         ) {
           item.count = parseInt(action.payload.count);
         }

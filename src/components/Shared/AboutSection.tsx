@@ -19,8 +19,15 @@ function AboutSection() {
               </h2>
               <p>
                 JhatkaByte is a Bengal-based E-commerce (Registered No:
-                0917P169223529, FSSAI Lic: 12822014000043) for home delivery of
+                0917P169223529, GST: 19AZTPB8624K1ZQ, FSSAI:
+                22826119000283) for home delivery of
                 Jhatka mutton of Black Bengal variety and also ‘Deshi chicken’.
+              </p>
+              <p>
+                Address: Shanti Bazar, Barrackpur, West Bengal 700120
+                <br />
+                Contact: 6289560934, 9239031756, 89619 94324, 79083
+                87963 (Bardhaman)
               </p>
               <p>
                 Jhatka is an ancient India’s meat processing technique for

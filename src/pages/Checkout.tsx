@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import HeadingSection from "../components/Shared/HeadingSection";
@@ -74,11 +74,15 @@ function Checkout() {
   const [orderDeliveryDates, setOrderDeliveryDates] = useState<any>({});
   const [orderErrors, setOrderErrors] = useState({});
 
-  const uniqueProducts = Object.values(
-    cartDetails.reduce((acc: any, obj: any) => {
-      acc[obj.productId] = obj;
-      return acc;
-    }, {})
+  const uniqueProducts = useMemo(
+    () =>
+      Object.values(
+        cartDetails.reduce((acc: any, obj: any) => {
+          acc[obj.productId] = obj;
+          return acc;
+        }, {})
+      ),
+    [cartDetails]
   );
 
   useEffect(() => {
@@ -174,7 +178,7 @@ function Checkout() {
 
     uniqueProducts.forEach((item: any) => {
       if (!orderDeliveryDates[item.productId]) {
-        errors.deliveryDate = "Please select delivery dates for all the items";
+        errors.deliveryDate = "Please select one delivery date for the order";
       }
     });
 

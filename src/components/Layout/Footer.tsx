@@ -25,9 +25,10 @@ function Footer() {
                 <ul className="contact-info-list">
                   <li>info@jhatkabyte.com</li>
                   <li>
-                    Flat no 4E, Ramas Garden, Sanjoal, near Oil Mill, Kharagpur
-                    721301
+                    Shanti Bazar, Barrackpur, West Bengal 700120
                   </li>
+                  <li>GST: 19AZTPB8624K1ZQ</li>
+                  <li>FSSAI: 22826119000283</li>
                 </ul>
               </div>
             </div>
@@ -37,7 +38,10 @@ function Footer() {
                   <span></span>
                 </h3>
                 <ul className="opening-hours-list">
+                  <li>+91 6289560934</li>
+                  <li>+91 9239031756</li>
                   <li>+91 89619 94324</li>
+                  <li>+91 79083 87963 (Bardhaman)</li>
                   <li>Orders gets closed by previous day 11.00 PM</li>
                 </ul>
               </div>
