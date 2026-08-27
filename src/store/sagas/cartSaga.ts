@@ -32,7 +32,12 @@ import {
   SHOW_ERROR_MESSAGE,
 } from "../actionTypes";
 
-const normalizeUnit = (unit: any) => `${unit || ""}`.trim().toLowerCase();
+const normalizeUnit = (unit: any) => {
+  const normalized = `${unit || ""}`.trim().toLowerCase();
+  if (["piece", "pieces", "piece(s)"].includes(normalized)) return "piece(s)";
+  if (["plate", "plates", "plate(s)"].includes(normalized)) return "plate(s)";
+  return normalized;
+};
 
 function* setCartItemSaga(action: any): any {
   yield put({ type: RESET_CART_ERROR, payload: false });
@@ -65,7 +70,8 @@ function* setCartItemSaga(action: any): any {
         yield put({ type: SET_CART_ERROR, payload: errorMsg });
         return;
       } else {
-        cartDetails[existingIndex].count += action.payload.count;
+        cartDetails[existingIndex].count =
+          parseInt(cartDetails[existingIndex].count) + parseInt(action.payload.count);
       }
       yield call(request, "put", "/cart", cartDetails[existingIndex]);
     } else {

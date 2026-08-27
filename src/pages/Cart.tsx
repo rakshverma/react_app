@@ -21,7 +21,12 @@ const parsePriceRows = (value: any) => {
   }
 };
 
-const normalizeUnit = (unit: any) => `${unit || ""}`.trim().toLowerCase();
+const normalizeUnit = (unit: any) => {
+  const normalized = `${unit || ""}`.trim().toLowerCase();
+  if (["piece", "pieces", "piece(s)"].includes(normalized)) return "piece(s)";
+  if (["plate", "plates", "plate(s)"].includes(normalized)) return "plate(s)";
+  return normalized;
+};
 
 const isCartItemAvailable = (cartItem: any, productList: any[]) => {
   const product = productList.find((item: any) => `${item.id}` === `${cartItem.productId}`);

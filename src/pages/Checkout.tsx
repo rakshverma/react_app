@@ -33,7 +33,12 @@ const parsePriceRows = (value: any) => {
   }
 };
 
-const normalizeUnit = (unit: any) => `${unit || ""}`.trim().toLowerCase();
+const normalizeUnit = (unit: any) => {
+  const normalized = `${unit || ""}`.trim().toLowerCase();
+  if (["piece", "pieces", "piece(s)"].includes(normalized)) return "piece(s)";
+  if (["plate", "plates", "plate(s)"].includes(normalized)) return "plate(s)";
+  return normalized;
+};
 
 const getUnavailableCartItems = (cartDetails: any[], productList: any[]) => {
   return cartDetails.filter((cartItem: any) => {
