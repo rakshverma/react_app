@@ -23,7 +23,7 @@ function ContactFormSection() {
                   Barrackpur, <br /> West Bengal 700120
                 </li>
                 <li>
-                  <i className="fas fa-envelope"></i>info@jhatkabyte.com
+                  <i className="fas fa-envelope"></i>jhatkabyte@gmail.com
                 </li>
                 <li>
                   <i className="fas fa-phone"></i>+91 6289560934 <br />

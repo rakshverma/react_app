@@ -23,7 +23,7 @@ function Footer() {
                   Contact Info <span></span>
                 </h3>
                 <ul className="contact-info-list">
-                  <li>info@jhatkabyte.com</li>
+                  <li>jhatkabyte@gmail.com</li>
                   <li>
                     Shanti Bazar, Barrackpur, West Bengal 700120
                   </li>
