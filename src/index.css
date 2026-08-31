@@ -255,6 +255,93 @@ img {
   .modal-body.text-center {
     padding: 22px 14px !important;
   }
+
+  .checkout-section .row.mt-5 {
+    margin-top: 24px !important;
+    row-gap: 18px;
+  }
+
+  .nav-list-item {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 0;
+    padding-left: 0;
+  }
+
+  .nav-list-item li a,
+  .nav-list-item li button {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    text-align: left;
+  }
+
+  .my-account-main .checkout-form-wrap {
+    padding: 18px 14px !important;
+  }
+
+  .my-account-main h2,
+  .checkout-form-wrap h2 {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .my-account-orders-table,
+  .my-account-orders-table thead,
+  .my-account-orders-table tbody,
+  .my-account-orders-table tfoot,
+  .my-account-orders-table tr,
+  .my-account-orders-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .my-account-orders-table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .my-account-orders-table thead {
+    display: none;
+  }
+
+  .my-account-orders-table tbody tr,
+  .my-account-orders-table tfoot tr {
+    margin-bottom: 14px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .my-account-orders-table td {
+    display: grid;
+    grid-template-columns: minmax(104px, 36%) minmax(0, 1fr);
+    gap: 10px;
+    padding: 8px 0 !important;
+    border: 0 !important;
+    text-align: left !important;
+    word-break: break-word;
+  }
+
+  .my-account-orders-table td:empty {
+    display: none;
+  }
+
+  .my-account-orders-table td::before {
+    content: attr(data-label);
+    color: #151515;
+    font-weight: 700;
+  }
+
+  .my-account-orders-table td:empty::before {
+    content: none;
+  }
+
+  .my-account-order-line + .my-account-order-line {
+    margin-top: 6px;
+  }
 }
 
 @media (max-width: 420px) {

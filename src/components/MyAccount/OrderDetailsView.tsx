@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import moment from "moment";
 import { Link, useLocation } from "react-router-dom";
 import { uploadUrl } from "../../utils/axios";
@@ -10,7 +10,6 @@ const getReceiptUrl = (receiptUrl: string) => {
 };
 
 function OrderDetailsView() {
-  const dispatch = useDispatch();
   const { orderList } = useSelector((state: any) => state.order);
   const location = useLocation();
   const searchParams = new URLSearchParams(location?.search);
@@ -25,11 +24,8 @@ function OrderDetailsView() {
     if (product.length > 0) {
       const {
         name,
-        email,
-        phone_number,
         inserted_at,
         updated_at,
-        ref_no,
         total_price,
         status,
         receipt_url,
@@ -89,13 +85,13 @@ function OrderDetailsView() {
 
   const products = () => {
     if (product.length) {
-      const { total_price, shipping_address, billing_address, shipping_cost } =
+      const { total_price, shipping_cost } =
         product[0];
 
       return (
         <>
           <h2 className="border-bottom">Orders</h2>
-          <table className="table">
+          <table className="table my-account-orders-table">
             <thead>
               <tr>
                 <th className="text-start">Product</th>
@@ -124,7 +120,7 @@ function OrderDetailsView() {
                 if (delivery_status === 4) status = "canceled";
                 return (
                   <tr key={`ord_itm_${i}`}>
-                    <td className="text-start" style={{ flexDirection: "row" }}>
+                    <td className="text-start" data-label="Product" style={{ flexDirection: "row" }}>
                       <div>
                         <Link to={`/product/details/${product_id}`}>
                           {name}
@@ -134,9 +130,9 @@ function OrderDetailsView() {
                         </p>
                       </div>
                     </td>
-                    <td className="text-center">{delivery_date}</td>
-                    <td className="text-center">{status}</td>
-                    <td className="text-end">₹{(Number(price) * Number(count)).toFixed(2)}</td>
+                    <td className="text-center" data-label="Delivery Date">{delivery_date}</td>
+                    <td className="text-center" data-label="Delivery Status">{status}</td>
+                    <td className="text-end" data-label="Total">₹{(Number(price) * Number(count)).toFixed(2)}</td>
                   </tr>
                 );
               })}
@@ -144,30 +140,30 @@ function OrderDetailsView() {
 
             <tfoot>
               <tr>
-                <td className="text-start">Subtotal:</td>
+                <td className="text-start" data-label="Subtotal">Subtotal:</td>
                 <td></td>
                 <td></td>
-                <td className="text-end">
+                <td className="text-end" data-label="Subtotal">
                   ₹{(Number(total_price) - Number(shipping_cost)).toFixed(2)}
                 </td>
               </tr>
               <tr>
-                <td className="text-start">
+                <td className="text-start" data-label="Shipping">
                   Shipping: <small>(via Home Delivery) </small>
                 </td>
                 <td></td>
                 <td></td>
-                <td className="text-end">
+                <td className="text-end" data-label="Shipping">
                   {" "}
                   ₹
                   {Number(shipping_cost) > 0 ? Number(shipping_cost).toFixed(2) : Number(shipping_cost)}
                 </td>
               </tr>
               <tr>
-                <td className="text-start text-dark fw-bold">Total:</td>
+                <td className="text-start text-dark fw-bold" data-label="Total">Total:</td>
                 <td></td>
                 <td></td>
-                <td className="text-end text-dark fw-bold">
+                <td className="text-end text-dark fw-bold" data-label="Total">
                   ₹{Number(total_price).toFixed(2)}
                 </td>
               </tr>
