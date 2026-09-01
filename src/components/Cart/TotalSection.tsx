@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 function TotalSection({ cartDetails, shippingCost, hasUnavailableItems }: any) {
-  console.log("shippingCost = ", shippingCost);
+  const isAuthenticated = useAuth();
   let subTotal = 0;
   if (cartDetails.length) {
     cartDetails.forEach((item: any) => {
@@ -33,7 +34,7 @@ function TotalSection({ cartDetails, shippingCost, hasUnavailableItems }: any) {
                   <span></span>
                 </span>
               ) : (
-                <Link to={"/checkout"} className="default-btn">
+                <Link to={isAuthenticated ? "/checkout" : "/checkout/create-account"} className="default-btn">
                   Proceed to checkout
                   <span></span>
                 </Link>

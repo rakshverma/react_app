@@ -10,6 +10,6 @@ export const registerUserAction = (data: any) => {
 export const loginUserAction = (data: any) => {
   return { type: LOGIN_REQUEST, payload: data };
 };
-export const forgotPasswordAction = (email: string) => {
-  return { type: FORGOT_PASSWORD_REQUEST, payload: email };
+export const forgotPasswordAction = (data: any) => {
+  return { type: FORGOT_PASSWORD_REQUEST, payload: data };
 };

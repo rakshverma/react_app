@@ -30,7 +30,7 @@ function RegisterSection({
                     <span></span>
                   </h2>
                   <p className="password-service-alert">
-                    Please remember your password. Password recovery by email is not available yet.
+                    Please remember your password and secret code. You can use the secret code if you forget your password.
                   </p>
                 </div>
                 <div className="contact-form-group">
@@ -120,6 +120,27 @@ function RegisterSection({
                         },
                       }}
                       error={errors?.password || null}
+                    />
+                  </div>
+                  <div className="form-field full-w">
+                    <Input
+                      type={"text"}
+                      name={"secretCode"}
+                      placeholder={"Your Secret Code"}
+                      className={"form-control"}
+                      register={register}
+                      validationObj={{
+                        required: "Please enter your secret code",
+                        minLength: {
+                          value: 4,
+                          message: "Secret code should be minimum 4 characters",
+                        },
+                        maxLength: {
+                          value: 60,
+                          message: "Secret code should be max 60 characters",
+                        },
+                      }}
+                      error={errors?.secretCode || null}
                     />
                   </div>
                   <div className="form-field full-w">

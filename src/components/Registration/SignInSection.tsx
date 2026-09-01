@@ -9,6 +9,7 @@ function SignInSection({
   onSubmit,
   setForgotPassView,
   forgotPassView,
+  watchPassword,
 }: any) {
   return (
     <section className="contact-section bg-grey pb-5 padding">
@@ -23,9 +24,14 @@ function SignInSection({
             <div className="contact-form">
               <div className="contact-title">
                 <h2>
-                  {forgotPassView ? "Forgot Password" : "Sign In Your Account"}
+                  {forgotPassView ? "Reset Password" : "Sign In Your Account"}
                   <span></span>
                 </h2>
+                {forgotPassView && (
+                  <p className="password-service-alert">
+                    Use the secret code you saved during registration to set a new password.
+                  </p>
+                )}
               </div>
               <form
                 onSubmit={handleSubmit(onSubmit)}
@@ -50,12 +56,56 @@ function SignInSection({
                       error={errors?.email || null}
                     />
                   </div>
-                  {!forgotPassView && (
+                  {forgotPassView && (
+                    <div className="form-field full-w">
+                      <Input
+                        type={"text"}
+                        name={"secretCode"}
+                        placeholder={"Your Secret Code"}
+                        className={"form-control"}
+                        register={register}
+                        validationObj={{
+                          required: "Please enter your secret code",
+                          minLength: {
+                            value: 4,
+                            message: "Secret code should be minimum 4 characters",
+                          },
+                          maxLength: {
+                            value: 60,
+                            message: "Secret code should be max 60 characters",
+                          },
+                        }}
+                        error={errors?.secretCode || null}
+                      />
+                    </div>
+                  )}
+                  <div className="form-field full-w">
+                    <Input
+                      type={"password"}
+                      name={"password"}
+                      placeholder={forgotPassView ? "New Password" : "Password"}
+                      className={"form-control"}
+                      register={register}
+                      validationObj={{
+                        required: "Please enter your password",
+                        minLength: {
+                          value: 6,
+                          message: "Password should be minimum 6 characters",
+                        },
+                        maxLength: {
+                          value: 30,
+                          message: "Password should be max 30 chars",
+                        },
+                      }}
+                      error={errors?.password || null}
+                    />
+                  </div>
+                  {forgotPassView && (
                     <div className="form-field full-w">
                       <Input
                         type={"password"}
-                        name={"password"}
-                        placeholder={"Password"}
+                        name={"confPassword"}
+                        placeholder={"Confirm New Password"}
                         className={"form-control"}
                         register={register}
                         validationObj={{
@@ -68,33 +118,36 @@ function SignInSection({
                             value: 30,
                             message: "Password should be max 30 chars",
                           },
+                          validate: (value: string) =>
+                            value === watchPassword || "Passwords do not match",
                         }}
-                        error={errors?.password || null}
+                        error={errors?.confPassword || null}
                       />
                     </div>
                   )}
 
                   <div className="form-field full-w d-grid">
                     <button type="submit" className="default-btn text-center">
-                      {forgotPassView ? "Submit" : "Sign In"}
+                      {forgotPassView ? "Reset Password" : "Sign In"}
                     </button>
                   </div>
                   <div className="form-field full-w d-grid">
-                    <span
-                      style={{ textAlign: "center", cursor: "pointer" }}
+                    <button
+                      type="button"
+                      className="app-auth-link"
                       onClick={() => {
                         setForgotPassView(!forgotPassView);
                       }}
                     >
                       {forgotPassView ? "Sign In" : "Forgot Password?"}
-                    </span>
+                    </button>
                   </div>
                 </div>
               </form>
               <div id="form-messages" className="alert" role="alert"></div>
 
               <div style={{ paddingTop: 20 }}>
-                Register via email? <Link to={"/signup"}>Click Here</Link>
+                New to JhatkaByte? <Link to={"/signup"}>Create account</Link>
               </div>
             </div>
           </div>

@@ -47,10 +47,13 @@ export interface RegisterFormData {
   phone: number;
   password: string;
   confPassword: string;
+  secretCode: string;
 }
 
 export interface LoginFormData {
   formState: any;
   email: string;
   password: string;
+  confPassword?: string;
+  secretCode?: string;
 }

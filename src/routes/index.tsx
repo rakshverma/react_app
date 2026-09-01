@@ -30,6 +30,7 @@ const Application = () => {
           />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout/create-account" element={<Checkout />} />
           <Route path="/thankyou/:refId" element={<Thankyou />} />
           <Route path="/myaccount" element={<MyAccount />} />
           <Route path="/myaccount/:page" element={<MyAccount />} />

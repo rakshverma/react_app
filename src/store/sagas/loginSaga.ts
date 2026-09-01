@@ -80,14 +80,14 @@ function* forgotPassSaga(action: any): any {
       request,
       "post",
       "/auth/forgotpassword",
-      { email: action.payload },
+      action.payload,
       isPrivateRoute
     );
     yield put(hideLoader());
     // yield put({ type: FORGOT_PASS_SUCCESS });
     yield put({
       type: SHOW_SUCCESS_MESSAGE,
-      payload: "Password successfully sent in your email id",
+      payload: "Password reset successfully. Please sign in with your new password.",
     });
   } catch (error: any) {
     const errMsg =

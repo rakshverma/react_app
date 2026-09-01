@@ -473,3 +473,28 @@ img {
   font-size: 14px;
   line-height: 1.45;
 }
+
+.checkout-account-create {
+  border-left: 4px solid #d33a1c;
+}
+
+.checkout-account-note {
+  margin: -8px 0 18px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.checkout-form .form-field.full-w {
+  grid-column: 1 / -1;
+}
+
+.app-auth-link {
+  min-height: 40px;
+  border: 0;
+  background: transparent;
+  color: #d33a1c;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}

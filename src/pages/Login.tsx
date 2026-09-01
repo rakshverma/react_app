@@ -22,7 +22,9 @@ function Login() {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<LoginFormData>();
+  const watchPassword = watch("password");
 
   useEffect(() => {
     if (isSuccess || isAuthenticated) {
@@ -33,7 +35,7 @@ function Login() {
   const onSubmit = (data: any) => {
     console.log(data);
     if (forgotPassView) {
-      dispatch(forgotPasswordAction(data.email));
+      dispatch(forgotPasswordAction(data));
     } else {
       dispatch(loginUserAction(data));
     }
@@ -51,6 +53,7 @@ function Login() {
         onSubmit={onSubmit}
         setForgotPassView={setForgotPassView}
         forgotPassView={forgotPassView}
+        watchPassword={watchPassword}
       />
     </>
   );
