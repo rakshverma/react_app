@@ -6,6 +6,7 @@ import {
   DELETE_REVIEW,
   RESET_ORDER_STATUS,
   ORDER_DATA,
+  CANCEL_FUTURE_ORDER,
 } from "../actionTypes";
 
 export const placeUserOrderAction = (
@@ -34,6 +35,9 @@ export const getOrderDetailsOnRefId = (refId: any) => {
 };
 export const getOrderListAction = () => {
   return { type: ORDER_LIST };
+};
+export const cancelFutureOrderAction = (orderId: any) => {
+  return { type: CANCEL_FUTURE_ORDER, payload: orderId };
 };
 export const addReviewAction = (stars: number, review: string, pid: number) => {
   return { type: ADD_REVIEW, payload: { stars, review, pid } };

@@ -29,6 +29,9 @@ function RegisterSection({
                     Create Your Account
                     <span></span>
                   </h2>
+                  <p className="password-service-alert">
+                    Please remember your password. Password recovery by email is not available yet.
+                  </p>
                 </div>
                 <div className="contact-form-group">
                   <div className="form-field full-w">

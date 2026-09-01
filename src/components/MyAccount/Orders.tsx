@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { uploadUrl } from "../../utils/axios";
+import { cancelFutureOrderAction } from "../../store/actions/orderAction";
 
 const getReceiptUrl = (receiptUrl: string) => {
   if (!receiptUrl) return "";
@@ -11,7 +12,27 @@ const getReceiptUrl = (receiptUrl: string) => {
 };
 
 function Orders() {
+  const dispatch = useDispatch();
   const { orderList } = useSelector((state: any) => state.order);
+
+  const isFutureActiveItem = (item: any) => {
+    const deliveryDate = moment(`${item.delivery_date || ""}`.trim(), ["DD/MM/YYYY", "D/M/YYYY", "YYYY-MM-DD", "MM/DD/YYYY"], true);
+    return (
+      deliveryDate.isValid() &&
+      deliveryDate.startOf("day").isAfter(moment().startOf("day")) &&
+      [1, 2].includes(Number(item.delivery_status))
+    );
+  };
+
+  const canCancelOrder = (order: any) => {
+    return (order.itemList || []).some(isFutureActiveItem);
+  };
+
+  const cancelFutureOrder = (orderId: any) => {
+    if (window.confirm("Cancel the future items in this order?")) {
+      dispatch(cancelFutureOrderAction(orderId));
+    }
+  };
 
   const orders = () => {
     if (orderList.length) {
@@ -105,6 +126,18 @@ function Orders() {
                         <a href={getReceiptUrl(item.receipt_url)} target="_blank" rel="noreferrer">
                           View Invoice
                         </a>
+                      </>
+                    )}
+                    {canCancelOrder(item) && (
+                      <>
+                        <br />
+                        <button
+                          type="button"
+                          className="cancel-order-link"
+                          onClick={() => cancelFutureOrder(id)}
+                        >
+                          Cancel Future Items
+                        </button>
                       </>
                     )}
                   </td>

@@ -440,3 +440,36 @@ img {
     grid-template-columns: 1fr;
   }
 }
+
+.cancel-order-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  margin-top: 6px;
+  padding: 6px 12px;
+  border: 1px solid #dc3545;
+  border-radius: 6px;
+  background: #fff;
+  color: #dc3545;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.cancel-order-link:hover,
+.cancel-order-link:focus {
+  background: #dc3545;
+  color: #fff;
+}
+
+.password-service-alert {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid #d33a1c;
+  border-radius: 6px;
+  background: #fff8f2;
+  color: #5b2b16;
+  font-size: 14px;
+  line-height: 1.45;
+}

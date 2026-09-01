@@ -11,6 +11,7 @@ import {
   SET_USER_INFO,
   ORDER_LIST,
   SET_USER_ORDER_LIST,
+  CANCEL_FUTURE_ORDER,
   ADD_REVIEW,
   SET_REVIEW,
   SET_REVIEW_ERROR,
@@ -126,6 +127,31 @@ function* getOrderListSaga(action: any): any {
   }
 }
 
+function* cancelFutureOrderSaga(action: any): any {
+  try {
+    yield put(showLoader());
+    const response = yield call(request, "post", "/order/cancel", {
+      orderId: action.payload,
+    });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Future order canceled successfully",
+    });
+    const listResponse = yield call(request, "get", "/order/list");
+    yield put({
+      type: SET_USER_ORDER_LIST,
+      payload: listResponse?.data?.data || [],
+    });
+    yield put(hideLoader());
+  } catch (e: any) {
+    yield put(hideLoader());
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: e?.response?.data?.message || "Unable to cancel order. Please try again.",
+    });
+  }
+}
+
 function* getOrderSuccessDataSaga(action: any): any {
   try {
     yield put(showLoader());
@@ -211,6 +237,7 @@ export function* watchOrder() {
   yield takeLatest(PLACE_ORDER, setOrderDetailsSaga);
   yield takeLatest(RESET_ORDER_STATUS, resetOrderStatusSaga);
   yield takeLatest(ORDER_LIST, getOrderListSaga);
+  yield takeLatest(CANCEL_FUTURE_ORDER, cancelFutureOrderSaga);
   yield takeLatest(ADD_REVIEW, addReviewSaga);
   yield takeLatest(GET_REVIEW, getReviewSaga);
   yield takeLatest(DELETE_REVIEW, deleteReviewSaga);
