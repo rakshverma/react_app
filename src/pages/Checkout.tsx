@@ -334,7 +334,10 @@ function Checkout() {
                   <i className="las la-check"></i>
                 </div>
                 <h3>Order Placed</h3>
-                <p>Your order #{orderDetails.refId} has been saved. You can download the invoice now.</p>
+                <p>
+                  Your order #{orderDetails.refId} has been saved.
+                  {receiptUrl ? " You can download the invoice now." : " The invoice will be prepared shortly."}
+                </p>
                 <div className="order-processing-actions">
                   {receiptUrl && (
                     <a href={receiptUrl} target="_blank" rel="noreferrer" className="default-btn">
