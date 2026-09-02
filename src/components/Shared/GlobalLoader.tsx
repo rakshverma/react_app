@@ -1,11 +1,19 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import LoadingIndicator from "../LoadingIndicator";
 
 const GlobalLoader = () => {
   const isLoading = useSelector((state: any) => state.loader.loading);
-  console.log("LOADFING= ", isLoading);
-  return isLoading ? null : null;
+  if (!isLoading) return null;
+
+  return (
+    <div className="global-loader-overlay" role="status" aria-live="polite" aria-busy="true">
+      <div className="global-loader-card">
+        <div className="global-loader-spinner"></div>
+        <h3>Please wait</h3>
+        <p>Completing your request...</p>
+      </div>
+    </div>
+  );
 };
 
 export default GlobalLoader;

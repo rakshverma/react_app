@@ -10,6 +10,7 @@ import {
   PRODUCT_SUCCESS,
   GET_PRODUCT_REVIEW,
   SET_PRODUCT_REVIEW,
+  SHOW_ERROR_MESSAGE,
 } from "../actionTypes";
 
 function* getAllcategorySaga(): any {
@@ -22,6 +23,10 @@ function* getAllcategorySaga(): any {
   } catch (error: any) {
     console.log("get category ERROR = ", error);
     yield put({ type: SET_CATEGORY_INFO, payload: [] });
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: error?.response?.data?.message || "Unable to load categories. Please try again.",
+    });
     yield put(hideLoader());
   }
 }
@@ -46,6 +51,10 @@ function* getAllProductSaga(action: any): any {
   } catch (error: any) {
     console.log("get product ERROR = ", error);
     yield put({ type: SET_PRODUCT_INFO, payload: [] });
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: error?.response?.data?.message || "Unable to load products for this pincode. Please try again.",
+    });
     yield put(hideLoader());
   }
 }
@@ -63,6 +72,10 @@ function* getProductReviewOnIdSaga(action: any): any {
   } catch (error: any) {
     console.log("get product ERROR = ", error);
     yield put({ type: SET_PRODUCT_REVIEW, payload: [] });
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: error?.response?.data?.message || "Unable to load product reviews. Please try again.",
+    });
     yield put(hideLoader());
   }
 }

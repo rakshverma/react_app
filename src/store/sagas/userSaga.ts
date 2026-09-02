@@ -48,6 +48,10 @@ function* logoutSaga(action: any): any {
     yield localStorage.removeItem("userinfo");
     yield localStorage.removeItem("carthash");
     yield put({ type: RESET_STORE });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: "Signed out successfully",
+    });
   } catch (e: any) {
     console.log("logout error = ", e);
     yield put(hideLoader());
@@ -98,6 +102,10 @@ function* addUserAddressSaga(action: any): any {
       localStorage.setItem("userinfo", info);
     }
     yield put({ type: SET_USER_ADDRESS, payload: response?.data?.data });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Address updated successfully",
+    });
     yield put(hideLoader());
     return true;
   } catch (error: any) {

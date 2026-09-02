@@ -251,6 +251,10 @@ function Checkout() {
       const errors = validateFormData(formData, orderDeliveryDates);
       if (Object.keys(errors).length > 0) {
         setOrderErrors(errors);
+        dispatch({
+          type: SHOW_ERROR_MESSAGE,
+          payload: Object.values(errors)[0] || "Please complete the checkout details.",
+        });
         return;
       } else {
         let activeUser = userInfo;
@@ -260,9 +264,10 @@ function Checkout() {
           activeUser = registeredUser;
         }
         const userId = activeUser.id;
-        const isPincodeChanged = pincode === activeUser.pin_code;
+        const isPincodeChanged = Boolean(activeUser.pin_code && pincode !== activeUser.pin_code);
         let shipping_cost = 0;
         if (Object.values(orderDeliveryDates).some(Boolean)) shipping_cost = shippingCost;
+        setOrderErrors({});
         dispatch(
           placeUserOrderAction(
             formData,
@@ -275,6 +280,10 @@ function Checkout() {
         );
       }
     } else {
+      dispatch({
+        type: SHOW_ERROR_MESSAGE,
+        payload: "Your cart is empty. Please add items before checkout.",
+      });
       return;
     }
   };
@@ -310,14 +319,14 @@ function Checkout() {
           </div>
         </div>
       </section>
-      {(isPlacingOrder || isSuccess) && (
+      {(isCreatingAccount || isPlacingOrder || isSuccess) && (
         <div className="order-processing-overlay" role="status" aria-live="polite">
           <div className="order-processing-card">
             {!isSuccess ? (
               <>
                 <div className="order-processing-spinner"></div>
-                <h3>{orderProgressStep || "Processing Your Order"}</h3>
-                <p>Please wait while we confirm your cart and save your order.</p>
+                <h3>{isCreatingAccount ? "Creating Your Account" : orderProgressStep || "Processing Your Order"}</h3>
+                <p>{isCreatingAccount ? "Please wait while we create your account before placing the order." : "Please wait while we confirm your cart and save your order."}</p>
               </>
             ) : (
               <>

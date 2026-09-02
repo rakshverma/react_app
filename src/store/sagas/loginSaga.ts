@@ -29,6 +29,10 @@ function* registerSaga(action: any): any {
     );
     yield put({ type: SET_USER_INFO, payload: response?.data?.data });
     yield put({ type: LOGIN_SUCCESS, payload: response?.data.message });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Account created successfully",
+    });
     yield put(hideLoader());
   } catch (error: any) {
     console.log("REGISTER ERROR = ", error);
@@ -57,6 +61,10 @@ function* loginSaga(action: any): any {
     );
     yield put({ type: SET_USER_INFO, payload: response?.data?.data });
     yield put({ type: LOGIN_SUCCESS, payload: response?.data?.message });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Signed in successfully",
+    });
     yield put(hideLoader());
   } catch (error: any) {
     console.log("LOGIN ERROR = ", error);

@@ -85,6 +85,10 @@ function* setOrderDetailsSaga(action: any): any {
         receipt: response?.data?.data?.receipt || null,
       },
     });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Order placed successfully",
+    });
     yield put(hideLoader());
   } catch (e: any) {
     console.log("error = ", e);
@@ -124,6 +128,10 @@ function* getOrderListSaga(action: any): any {
   } catch (e) {
     yield put(hideLoader());
     yield put({ type: SET_USER_ORDER_LIST, payload: [] });
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: "Unable to load your orders. Please try again.",
+    });
   }
 }
 
@@ -165,6 +173,10 @@ function* getOrderSuccessDataSaga(action: any): any {
   } catch (e) {
     yield put(hideLoader());
     yield put({ type: SET_ORDER_DATA, payload: [] });
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: "Unable to load order details. Please try again.",
+    });
   }
 }
 
@@ -180,10 +192,18 @@ function* addReviewSaga(action: any): any {
       type: SET_REVIEW,
       payload: response?.data?.data || [],
     });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Review added successfully",
+    });
     yield put(hideLoader());
-  } catch (e) {
+  } catch (e: any) {
     yield put(hideLoader());
     yield put({ type: SET_REVIEW, payload: [] });
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: e?.response?.data?.message || "Unable to add review. Please try again.",
+    });
   }
 }
 
@@ -196,7 +216,7 @@ function* getReviewSaga(): any {
       payload: response?.data?.data || [],
     });
     yield put(hideLoader());
-  } catch (e) {
+  } catch (e: any) {
     yield put(hideLoader());
     // yield put({
     //   type: SET_REVIEW_ERROR,
@@ -219,8 +239,12 @@ function* deleteReviewSaga(action: any): any {
       type: SET_REVIEW,
       payload: response?.data?.data || [],
     });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Review deleted successfully",
+    });
     yield put(hideLoader());
-  } catch (e) {
+  } catch (e: any) {
     yield put(hideLoader());
     // yield put({
     //   type: SET_REVIEW_ERROR,
@@ -228,7 +252,7 @@ function* deleteReviewSaga(action: any): any {
     // });
     yield put({
       type: SHOW_ERROR_MESSAGE,
-      payload: "Unable to delete review. Please reload your screen.",
+      payload: e?.response?.data?.message || "Unable to delete review. Please reload your screen.",
     });
   }
 }

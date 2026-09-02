@@ -66,8 +66,10 @@ function* setCartItemSaga(action: any): any {
           parseInt(action.payload.count) >
         5
       ) {
-        errorMsg = "max limit of 5 excceded for this item.";
+        errorMsg = "Maximum limit of 5 exceeded for this item.";
         yield put({ type: SET_CART_ERROR, payload: errorMsg });
+        yield put({ type: SHOW_ERROR_MESSAGE, payload: errorMsg });
+        yield put(hideLoader());
         return;
       } else {
         cartDetails[existingIndex].count =
@@ -142,7 +144,10 @@ function* getCartDetailsSaga(): any {
   yield put({ type: RESET_CART_ERROR, payload: false });
   try {
     const cartId = localStorage.getItem("carthash") || null;
-    if (!cartId) return;
+    if (!cartId) {
+      yield put(hideLoader());
+      return;
+    }
     const response = yield call(request, "get", `/cart/details/${cartId}`);
     yield put({
       type: SET_CART_DETAILS,
@@ -168,7 +173,11 @@ function* removeCartItemSaga(action: any): any {
   try {
     let { cartDetails } = yield select((state) => state.cart);
     const cartId = localStorage.getItem("carthash") || null;
-    if (!cartId) return;
+    if (!cartId) {
+      yield put(hideLoader());
+      yield put({ type: SHOW_ERROR_MESSAGE, payload: "Unable to remove cart item. Please reload your cart." });
+      return;
+    }
     yield call(request, "delete", `/cart/${cartId}`, action.payload);
     cartDetails = cartDetails.filter((item: any) => {
       if (
@@ -183,6 +192,7 @@ function* removeCartItemSaga(action: any): any {
       type: SET_CART_DETAILS,
       payload: cartDetails,
     });
+    yield put({ type: SHOW_SUCCESS_MESSAGE, payload: "Item removed from cart" });
     yield put(hideLoader());
   } catch (e) {
     yield put(hideLoader());
@@ -203,7 +213,11 @@ function* updateCartItemSaga(action: any): any {
   try {
     let { cartDetails } = yield select((state) => state.cart);
     const cartId = localStorage.getItem("carthash") || null;
-    if (!cartId) return;
+    if (!cartId) {
+      yield put(hideLoader());
+      yield put({ type: SHOW_ERROR_MESSAGE, payload: "Unable to update cart item. Please reload your cart." });
+      return;
+    }
     const existingIndex = cartDetails.findIndex(
       (item: any) =>
         item.productId === action.payload.item.productId &&
@@ -227,6 +241,7 @@ function* updateCartItemSaga(action: any): any {
         type: SET_CART_DETAILS,
         payload: cartDetails,
       });
+      yield put({ type: SHOW_SUCCESS_MESSAGE, payload: "Cart updated successfully" });
     } else {
       // yield put({
       //   type: SET_CART_ERROR,
@@ -307,6 +322,10 @@ function* removeExistingCartSaga(action: any): any {
         payload: shippingCost?.data?.data || 0,
       });
       yield put({ type: UPDATE_PINCODE_SUCCESS, payload: true });
+      yield put({
+        type: SHOW_SUCCESS_MESSAGE,
+        payload: "Pincode updated successfully",
+      });
     } else {
       const shippingCost = yield call(
         request,
@@ -319,6 +338,11 @@ function* removeExistingCartSaga(action: any): any {
         payload: shippingCost?.data?.data || 0,
       });
       yield localStorage.setItem("pincode", action.payload);
+      yield put({ type: UPDATE_PINCODE_SUCCESS, payload: true });
+      yield put({
+        type: SHOW_SUCCESS_MESSAGE,
+        payload: "Pincode updated successfully",
+      });
     }
     yield put(hideLoader());
   } catch (e: any) {
