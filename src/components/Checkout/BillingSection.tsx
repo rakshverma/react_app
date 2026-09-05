@@ -18,6 +18,8 @@ function BillingSection({
   updateorderDeliveryDate,
   uniqueProducts,
   shippingCost,
+  addressList,
+  onSelectSavedAddress,
   cartError,
   accountError,
   isPlacingOrder,
@@ -169,6 +171,21 @@ function BillingSection({
         )}
         <div className="checkout-form-wrap mb-10 pb-1">
           <h2>Billing Details</h2>
+          {Object.keys(userInfo).length > 0 && addressList?.length > 0 && (
+            <div className="checkout-address-picker">
+              {addressList.map((address: any) => (
+                <button
+                  type="button"
+                  className={address.is_default ? "active" : ""}
+                  key={address.id}
+                  onClick={() => onSelectSavedAddress(address)}
+                >
+                  <strong>{address.label || "Address"}</strong>
+                  <span>{address.street}, {address.district} - {address.pin_code}</span>
+                </button>
+              ))}
+            </div>
+          )}
           <div className="checkout-form">
             <div className="form-field">
               <input

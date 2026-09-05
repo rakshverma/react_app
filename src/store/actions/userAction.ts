@@ -4,6 +4,9 @@ import {
   USER_INFO,
   DISTRICT_LIST,
   ADD_ADDRESS,
+  GET_USER_ADDRESS_LIST,
+  DELETE_USER_ADDRESS,
+  SET_DEFAULT_USER_ADDRESS,
   RESET_USER_STATUS,
   UPDATE_USER_ACCOUNT,
 } from "../actionTypes";
@@ -23,6 +26,18 @@ export const getDistrictListAction = () => {
 
 export const updateAddressAction = (data: any) => {
   return { type: ADD_ADDRESS, payload: data };
+};
+
+export const getUserAddressListAction = () => {
+  return { type: GET_USER_ADDRESS_LIST };
+};
+
+export const deleteUserAddressAction = (id: any) => {
+  return { type: DELETE_USER_ADDRESS, payload: id };
+};
+
+export const setDefaultUserAddressAction = (id: any) => {
+  return { type: SET_DEFAULT_USER_ADDRESS, payload: id };
 };
 
 export const resetUserStatus = () => {

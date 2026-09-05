@@ -13,6 +13,10 @@ import {
   SET_DISTRICT_LIST,
   ADD_ADDRESS,
   SET_USER_ADDRESS,
+  GET_USER_ADDRESS_LIST,
+  SET_USER_ADDRESS_LIST,
+  DELETE_USER_ADDRESS,
+  SET_DEFAULT_USER_ADDRESS,
   RESET_USER_STATUS,
   SET_RESET_USER_STATUS,
   SET_USER_ADDRESS_ERROR,
@@ -92,13 +96,13 @@ function* addUserAddressSaga(action: any): any {
     const response = yield call(
       request,
       "post",
-      "/user/addUserAddress",
+      "/user/addresses",
       action.payload
     );
     const user: any = localStorage.getItem("userinfo");
     if (user) {
       let info = JSON.parse(user);
-      info = JSON.stringify({ ...info, ...response.data.data });
+      info = JSON.stringify({ ...info, ...(response.data.data?.savedAddress || {}) });
       localStorage.setItem("userinfo", info);
     }
     yield put({ type: SET_USER_ADDRESS, payload: response?.data?.data });
@@ -119,6 +123,69 @@ function* addUserAddressSaga(action: any): any {
       payload: errMsg,
     });
     yield put(hideLoader());
+  }
+}
+
+function* getUserAddressListSaga(): any {
+  try {
+    yield put(showLoader());
+    const response = yield call(request, "get", "/user/addresses");
+    yield put({ type: SET_USER_ADDRESS_LIST, payload: response?.data?.data || [] });
+    yield put(hideLoader());
+  } catch (error: any) {
+    yield put(hideLoader());
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: error?.response?.data?.message || "Unable to load address book. Please try again.",
+    });
+  }
+}
+
+function* deleteUserAddressSaga(action: any): any {
+  try {
+    yield put(showLoader());
+    const response = yield call(request, "delete", `/user/addresses/${action.payload}`);
+    yield put({ type: SET_USER_ADDRESS_LIST, payload: response?.data?.data || [] });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Address deleted successfully",
+    });
+    yield put(hideLoader());
+  } catch (error: any) {
+    yield put(hideLoader());
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: error?.response?.data?.message || "Unable to delete address. Please try again.",
+    });
+  }
+}
+
+function* setDefaultUserAddressSaga(action: any): any {
+  try {
+    yield put(showLoader());
+    const response = yield call(request, "put", `/user/addresses/${action.payload}/default`);
+    const addressList = response?.data?.data || [];
+    const defaultAddress = addressList.find((item: any) => item.is_default) || addressList[0] || {};
+    const user: any = localStorage.getItem("userinfo");
+    if (user) {
+      let info = JSON.parse(user);
+      info = JSON.stringify({ ...info, ...defaultAddress });
+      localStorage.setItem("userinfo", info);
+    }
+    yield put({ type: SET_USER_ADDRESS_LIST, payload: addressList });
+    const currentUser = yield select((state) => state.user.userInfo);
+    yield put({ type: SET_USER_INFO, payload: { ...currentUser, ...defaultAddress } });
+    yield put({
+      type: SHOW_SUCCESS_MESSAGE,
+      payload: response?.data?.message || "Default address updated successfully",
+    });
+    yield put(hideLoader());
+  } catch (error: any) {
+    yield put(hideLoader());
+    yield put({
+      type: SHOW_ERROR_MESSAGE,
+      payload: error?.response?.data?.message || "Unable to update default address. Please try again.",
+    });
   }
 }
 
@@ -176,6 +243,9 @@ export function* watchUser() {
   yield takeLatest(USER_INFO, setUserInfoSaga);
   yield takeLatest(DISTRICT_LIST, getDistrictListSaga);
   yield takeLatest(ADD_ADDRESS, addUserAddressSaga);
+  yield takeLatest(GET_USER_ADDRESS_LIST, getUserAddressListSaga);
+  yield takeLatest(DELETE_USER_ADDRESS, deleteUserAddressSaga);
+  yield takeLatest(SET_DEFAULT_USER_ADDRESS, setDefaultUserAddressSaga);
   yield takeLatest(RESET_USER_STATUS, resetUSerStatusSaga);
   yield takeLatest(UPDATE_USER_ACCOUNT, updateUserAccountSaga);
 }

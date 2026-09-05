@@ -5,6 +5,7 @@ import {
   SET_DISTRICT,
   SET_DISTRICT_LIST,
   SET_USER_ADDRESS,
+  SET_USER_ADDRESS_LIST,
   SET_RESET_USER_STATUS,
   SET_USER_ADDRESS_ERROR,
 } from "../actionTypes";
@@ -29,6 +30,7 @@ const initialState = {
   isSuccess: false,
   logoutError: false,
   districtList: [],
+  addressList: [],
 };
 export function userReducer(state = initialState, action: any) {
   switch (action.type) {
@@ -45,9 +47,12 @@ export function userReducer(state = initialState, action: any) {
     case SET_USER_ADDRESS:
       return {
         ...state,
-        userInfo: { ...state.userInfo, ...action.payload },
+        userInfo: { ...state.userInfo, ...(action.payload?.savedAddress || action.payload) },
+        addressList: action.payload?.addressList || state.addressList,
         isSuccess: true,
       };
+    case SET_USER_ADDRESS_LIST:
+      return { ...state, addressList: action.payload || [] };
     case SET_USER_ADDRESS_ERROR:
       return { ...state, isError: action.payload };
     case SET_RESET_USER_STATUS:

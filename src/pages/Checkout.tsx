@@ -8,6 +8,7 @@ import {
   getCartDetailsAction,
   getDistrictOnPinCodeAction,
 } from "../store/actions/cartAction";
+import { getUserAddressListAction } from "../store/actions/userAction";
 import {
   placeUserOrderAction,
   resetOrderStatusAction,
@@ -63,7 +64,7 @@ const getUnavailableCartItems = (cartDetails: any[], productList: any[]) => {
 function Checkout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userInfo, district } = useSelector((state: any) => state.user);
+  const { userInfo, district, addressList } = useSelector((state: any) => state.user);
   const { cartDetails, shippingCost } = useSelector((state: any) => state.cart);
   const { productList } = useSelector((state: any) => state.product);
   const { isSuccess, isError, orderDetails, isPlacingOrder, orderProgressStep } = useSelector(
@@ -144,10 +145,29 @@ function Checkout() {
     dispatch(getDistrictOnPinCodeAction(pincode));
   }, [dispatch, pincode]);
 
+  useEffect(() => {
+    if (Object.keys(userInfo).length > 0) {
+      dispatch(getUserAddressListAction());
+    }
+  }, [dispatch, userInfo?.id]);
+
   const updateFormData = (name: string, value: string) => {
     setFormData((state: any) => ({
       ...state,
       [name]: value,
+    }));
+  };
+
+  const selectSavedAddress = (address: any) => {
+    setFormData((state: any) => ({
+      ...state,
+      name: address.recipient_name || state.name,
+      phone: address.phone_number || state.phone,
+      state: address.state || "West Bengal",
+      district: address.district || "",
+      street: address.street || "",
+      landmark: address.landmark || "",
+      pincode: address.pin_code || pincode,
     }));
   };
 
@@ -317,6 +337,8 @@ function Checkout() {
               updateorderDeliveryDate={updateorderDeliveryDate}
               uniqueProducts={uniqueProducts}
               shippingCost={shippingCost}
+              addressList={addressList}
+              onSelectSavedAddress={selectSavedAddress}
               cartError={(orderErrors as any).cart}
               accountError={(orderErrors as any).account}
               isPlacingOrder={isPlacingOrder}

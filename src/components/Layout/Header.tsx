@@ -68,7 +68,7 @@ function Header() {
 
   useEffect(() => {
     if (isPincodeError) {
-      setPinCodeError(typeof isPincodeError === "string" ? isPincodeError : "Pincode is out of service area definition");
+      setPinCodeError(typeof isPincodeError === "string" ? isPincodeError : "Out of service area definition");
       setIsOpenModal(true);
     }
   }, [isPincodeError]);
