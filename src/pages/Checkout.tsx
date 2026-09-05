@@ -121,6 +121,18 @@ function Checkout() {
         landmark: pincode === userInfo.pin_code ? userInfo.landmark : "",
         street: pincode === userInfo.pin_code ? userInfo.street : "",
       }));
+    } else {
+      setFormData((state) => ({
+        ...state,
+        name: "",
+        email: "",
+        phone: "",
+        street: "",
+        landmark: "",
+        password: "",
+        confPassword: "",
+        secretCode: "",
+      }));
     }
   }, [district, userInfo]);
 
@@ -188,7 +200,7 @@ function Checkout() {
     if (phone && !phoneNumberRegex.test(phone))
       errors.phone = "Please enter valid phone number";
     if (!state) errors.state = "Please select your state";
-    if (!district) errors.district = "Please select your district";
+    if (!district) errors.district = "Please enter your district";
     if (!street) errors.street = "Please enter your street";
     if (!pincode) errors.pincode = "Please enter your pincode";
     if (pincode && !pinRegex.test(pincode))

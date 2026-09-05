@@ -5,7 +5,8 @@ import { getUserInfoAction } from "../../store/actions/userAction";
 import {
   getCartItemAction,
   removeExistingCartDetails,
-  getShippingCostAction
+  getShippingCostAction,
+  resetCartStatus
 } from "../../store/actions/cartAction";
 import {
   getAllCategoryAction,
@@ -57,9 +58,20 @@ function Header() {
 
   useEffect(() => {
     if (isPincodeSuccess) {
+      setUserPinCode("");
+      setPinCodeError("");
+      setIsOpenModal(false);
       navigate("/products", { state: { updatePincode: true } });
+      dispatch(resetCartStatus());
     }
-  }, [isPincodeSuccess]);
+  }, [dispatch, isPincodeSuccess, navigate]);
+
+  useEffect(() => {
+    if (isPincodeError) {
+      setPinCodeError(typeof isPincodeError === "string" ? isPincodeError : "Pincode is out of service area definition");
+      setIsOpenModal(true);
+    }
+  }, [isPincodeError]);
 
   const updateUserPinCode = () => {
     const pincodePattern = /^[1-9][0-9]{5}$/;
@@ -67,9 +79,8 @@ function Header() {
       setPinCodeError("Please enter valid pin code");
       return;
     }
+    setPinCodeError("");
     dispatch(removeExistingCartDetails(userPinCode));
-    setUserPinCode("");
-    setIsOpenModal(false);
   };
 
   return (

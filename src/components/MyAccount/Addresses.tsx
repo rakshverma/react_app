@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getUserInfoAction,
-  getDistrictListAction,
   updateAddressAction,
   resetUserStatus,
 } from "../../store/actions/userAction";
@@ -10,7 +9,7 @@ import { removeExistingCartDetails } from "../../store/actions/cartAction";
 
 function Addresses() {
   const dispatch = useDispatch();
-  const { userInfo, districtList, isSuccess, isError } = useSelector(
+  const { userInfo, isSuccess, isError } = useSelector(
     (state: any) => state.user
   );
   console.log("userInfo = ", userInfo);
@@ -25,7 +24,6 @@ function Addresses() {
   const [isShowMOdal, setIsShowModal] = useState(false);
 
   useEffect(() => {
-    dispatch(getDistrictListAction());
     if (Object.keys(userInfo).length === 0) {
       dispatch(getUserInfoAction());
     }
@@ -59,7 +57,7 @@ function Addresses() {
     const { state, district, street, landmark, pincode } = formData;
 
     if (!state) errors.state = "Please select your state";
-    if (!district) errors.district = "Please select your district";
+    if (!district) errors.district = "Please enter your district";
     if (!street) errors.street = "Please enter your street";
     if (!pincode) errors.pincode = "Please enter your pincode";
     if (pincode && !pinRegex.test(pincode))
@@ -125,38 +123,18 @@ function Addresses() {
                     )}
                   </div>
                   <div className="form-field">
-                    <select
-                      name={"district"}
+                    <input
+                      type="text"
+                      id="district"
+                      name="district"
+                      className="form-control"
+                      placeholder="District"
                       value={formData.district}
+                      defaultValue={userInfo?.district || ""}
                       onChange={(e) => {
                         updateFormData("district", e.target.value);
                       }}
-                      defaultValue={userInfo?.district || ""}
-                      style={{
-                        width: "100%",
-                        height: 50,
-                        lineHeight: 45,
-                        border: "1px solid #eee",
-                        borderRadius: 0,
-                        outline: "none",
-                        boxShadow: "none",
-                        textAlign: "left",
-                        backgroundColor: "#F9FAFC",
-                        marginTop: 5,
-                      }}
-                    >
-                      <option value="">Select district</option>
-                      {districtList.map((itm: any, i: number) => {
-                        return (
-                          <option
-                            key={`opt_dist_${i}`}
-                            value={`${itm.district}`}
-                          >
-                            {itm.district}
-                          </option>
-                        );
-                      })}
-                    </select>
+                    />
                     {orderErrors.district && (
                       <p style={{ color: "red" }}>{orderErrors.district}</p>
                     )}

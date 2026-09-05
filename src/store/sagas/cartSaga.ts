@@ -283,13 +283,13 @@ function* updateDistrictSaga(action: any): any {
     yield put(hideLoader());
   } catch (e) {
     yield put(hideLoader());
-    // yield put({
-    //   type: SET_DISTRICT_ERROR,
-    //   payload: "Unable to update district. Please reload your page.",
-    // });
+    const errMsg =
+      (e as any)?.response?.data?.message ||
+      "Unable to update district. Please reload your screen.";
+    yield put({ type: SET_DISTRICT_ERROR, payload: errMsg });
     yield put({
       type: SHOW_ERROR_MESSAGE,
-      payload: "Unable to update district. Please reload your screen.",
+      payload: errMsg,
     });
   }
 }
@@ -300,17 +300,17 @@ function* removeExistingCartSaga(action: any): any {
     const pincode = localStorage.getItem("pincode");
     const carthash = localStorage.getItem("carthash");
     if (pincode) {
-      if (carthash) {
-        yield call(request, "delete", `/cart/removeCart/${encodeURIComponent(carthash)}`);
-      }
       const newPinCode = action.payload;
-      yield put(getAllCategoryAction());
-      yield put(getAllProductsAction(newPinCode));
       const shippingCost = yield call(
         request,
         "get",
         `/product/getShippingCostOnPin/${encodeURIComponent(`${newPinCode}`.trim())}`
       );
+      if (carthash) {
+        yield call(request, "delete", `/cart/removeCart/${encodeURIComponent(carthash)}`);
+      }
+      yield put(getAllCategoryAction());
+      yield put(getAllProductsAction(newPinCode));
       console.log("shippingCostshippingCost = ", shippingCost);
       yield localStorage.setItem("pincode", newPinCode);
       yield put({
@@ -351,10 +351,10 @@ function* removeExistingCartSaga(action: any): any {
     const errMsg =
       e?.response?.data?.message ||
       "Unable to update pin code. Please reload your screen.";
-    // yield put({
-    //   type: UPDATE_PINCODE_ERROR,
-    //   payload: "Unable to update pin code. Please reload your screen.",
-    // });
+    yield put({
+      type: UPDATE_PINCODE_ERROR,
+      payload: errMsg,
+    });
     yield put({
       type: SHOW_ERROR_MESSAGE,
       payload: errMsg,
@@ -385,10 +385,10 @@ function* getShippingCostSaga(action: any): any {
     const errMsg =
       e?.response?.data?.message ||
       "Unable to update pin code. Please reload your screen.";
-    // yield put({
-    //   type: UPDATE_PINCODE_ERROR,
-    //   payload: "Unable to update pin code. Please reload your screen.",
-    // });
+    yield put({
+      type: UPDATE_PINCODE_ERROR,
+      payload: errMsg,
+    });
     yield put({
       type: SHOW_ERROR_MESSAGE,
       payload: errMsg,

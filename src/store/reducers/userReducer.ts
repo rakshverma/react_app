@@ -33,7 +33,7 @@ const initialState = {
 export function userReducer(state = initialState, action: any) {
   switch (action.type) {
     case SET_USER_INFO:
-      return { ...state, userInfo: { ...state.userInfo, ...action.payload } };
+      return { ...state, userInfo: action.payload || {} };
     case INVALID_USER:
       return { ...state, isError: true };
     case USER_LOGOUT_ERROR:

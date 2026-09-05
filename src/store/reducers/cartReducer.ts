@@ -51,6 +51,7 @@ export function cartReducer(state = initialState, action: any) {
       return {
         ...state,
         isPincodeSuccess: action.payload,
+        isPincodeError: false,
       };
     case RESET_CART_STATUS:
       return {
