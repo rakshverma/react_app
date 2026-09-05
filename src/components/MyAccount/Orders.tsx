@@ -15,8 +15,16 @@ function Orders() {
   const dispatch = useDispatch();
   const { orderList } = useSelector((state: any) => state.order);
 
+  const parseDeliveryDate = (value: any) => {
+    if (value instanceof Date) return moment(value);
+    const dateText = `${value || ""}`.trim();
+    if (!dateText) return moment.invalid();
+    const parsed = moment(dateText, ["DD/MM/YYYY", "D/M/YYYY", "YYYY-MM-DD", "MM/DD/YYYY", moment.ISO_8601], true);
+    return parsed.isValid() ? parsed : moment(dateText);
+  };
+
   const isFutureActiveItem = (item: any) => {
-    const deliveryDate = moment(`${item.delivery_date || ""}`.trim(), ["DD/MM/YYYY", "D/M/YYYY", "YYYY-MM-DD", "MM/DD/YYYY"], true);
+    const deliveryDate = parseDeliveryDate(item.delivery_date);
     return (
       deliveryDate.isValid() &&
       deliveryDate.startOf("day").isAfter(moment().startOf("day")) &&
@@ -82,18 +90,18 @@ function Orders() {
                   <td className="text-start text-info" data-label="Delivery Status">
                     {item.itemList.map((obj: any, itemIndex: number) => {
                       let status = "";
-                      if (obj.delivery_status === 1) status = "Processing";
-                      if (obj.delivery_status === 2) status = "On the way";
-                      if (obj.delivery_status === 3) status = "Delivered";
-                      if (obj.delivery_status === 4) status = "canceled";
+                      if (Number(obj.delivery_status) === 1) status = "Processing";
+                      if (Number(obj.delivery_status) === 2) status = "On the way";
+                      if (Number(obj.delivery_status) === 3) status = "Delivered";
+                      if (Number(obj.delivery_status) === 4) status = "Canceled";
                       return (
                         <div className="my-account-order-line" key={`order_${id}_status_${itemIndex}`}>
                           <a
                             className={`text-${
-                              obj.delivery_status === 1 ||
-                              obj.delivery_status === 2
+                              Number(obj.delivery_status) === 1 ||
+                              Number(obj.delivery_status) === 2
                                 ? "info"
-                                : obj.delivery_status === 3
+                                : Number(obj.delivery_status) === 3
                                 ? "success"
                                 : "danger"
                             }`}
