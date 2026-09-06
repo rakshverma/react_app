@@ -91,7 +91,6 @@ function* setOrderDetailsSaga(action: any): any {
     });
     yield put(hideLoader());
   } catch (e: any) {
-    console.log("error = ", e);
     yield put(hideLoader());
     const errorData = formatErrorData(e?.response?.data?.data);
     const errMsg = e?.response?.data?.message

@@ -36,7 +36,6 @@ function useGeoLocation() {
           setAddress(postalCode.short_name);
         })
         .catch((error) => {
-          console.log("ERROR = ", error);
           setError(error);
         });
     }

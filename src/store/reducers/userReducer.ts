@@ -11,7 +11,6 @@ import {
 } from "../actionTypes";
 
 const loadState = () => {
-  console.log("LOAD STATE CALLED");
   try {
     const serializedState = localStorage.getItem("userinfo");
     if (serializedState === null) {

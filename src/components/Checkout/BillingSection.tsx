@@ -32,8 +32,11 @@ function BillingSection({
     phone,
     state,
     district,
+    houseApartment,
+    streetName,
+    locality,
+    city,
     landmark,
-    street,
     pincode,
     additionalNote,
     password,
@@ -49,7 +52,6 @@ function BillingSection({
   const [isShowLogin, setIsShowLogin] = useState(false);
 
   const onSubmit = (data: any) => {
-    console.log(data);
     dispatch(loginUserAction(data));
   };
 
@@ -181,7 +183,7 @@ function BillingSection({
                   onClick={() => onSelectSavedAddress(address)}
                 >
                   <strong>{address.label || "Address"}</strong>
-                  <span>{address.street}, {address.district} - {address.pin_code}</span>
+                  <span>{address.street || [address.house_apartment, address.street_name, address.locality].filter(Boolean).join(", ")}, {address.city || address.district} - {address.pin_code}</span>
                 </button>
               ))}
             </div>
@@ -256,33 +258,65 @@ function BillingSection({
             <div className="form-field">
               <input
                 type="text"
-                id="district"
-                name="district"
+                id="houseApartment"
+                name="houseApartment"
                 className="form-control"
-                placeholder="District"
-                value={district}
+                placeholder="House number + apartment name"
+                value={houseApartment || ""}
                 onChange={(e) => {
-                  updateFormData("district", e.target.value);
+                  updateFormData("houseApartment", e.target.value);
                 }}
               />
-              {orderErrors.district && (
-                <p style={{ color: "red" }}>{orderErrors.district}</p>
+              {orderErrors.houseApartment && (
+                <p style={{ color: "red" }}>{orderErrors.houseApartment}</p>
               )}
             </div>
             <div className="form-field">
               <input
                 type="text"
-                id="street"
-                name="street"
+                id="streetName"
+                name="streetName"
                 className="form-control"
-                placeholder="Street"
-                value={street}
+                placeholder="Street name"
+                value={streetName || ""}
                 onChange={(e) => {
-                  updateFormData("street", e.target.value);
+                  updateFormData("streetName", e.target.value);
                 }}
               />
-              {orderErrors.street && (
-                <p style={{ color: "red" }}>{orderErrors.street}</p>
+              {orderErrors.streetName && (
+                <p style={{ color: "red" }}>{orderErrors.streetName}</p>
+              )}
+            </div>
+            <div className="form-field">
+              <input
+                type="text"
+                id="locality"
+                name="locality"
+                className="form-control"
+                placeholder="Locality name"
+                value={locality || ""}
+                onChange={(e) => {
+                  updateFormData("locality", e.target.value);
+                }}
+              />
+              {orderErrors.locality && (
+                <p style={{ color: "red" }}>{orderErrors.locality}</p>
+              )}
+            </div>
+            <div className="form-field">
+              <input
+                type="text"
+                id="city"
+                name="city"
+                className="form-control"
+                placeholder="City"
+                value={city || district || ""}
+                onChange={(e) => {
+                  updateFormData("city", e.target.value);
+                }}
+              />
+              {orderErrors.city && (
+                <p style={{ color: "red" }}>{orderErrors.city}</p>
               )}
             </div>
             <div className="form-field">

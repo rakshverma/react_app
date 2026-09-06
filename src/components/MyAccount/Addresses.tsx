@@ -17,6 +17,10 @@ const emptyAddress = {
   phoneNumber: "",
   state: "West Bengal",
   district: "",
+  houseApartment: "",
+  streetName: "",
+  locality: "",
+  city: "",
   street: "",
   landmark: "",
   pincode: "",
@@ -54,10 +58,14 @@ function Addresses() {
   }, [dispatch, formData.isDefault, formData.pincode, isSuccess]);
 
   const updateFormData = (name: string, value: string | boolean) => {
-    setFormData((state: any) => ({
-      ...state,
-      [name]: value,
-    }));
+    setFormData((state: any) => {
+      const nextState = { ...state, [name]: value };
+      if (["houseApartment", "streetName", "locality"].includes(name)) {
+        nextState.street = [nextState.houseApartment, nextState.streetName, nextState.locality].filter(Boolean).join(", ");
+      }
+      if (name === "city") nextState.district = value;
+      return nextState;
+    });
   };
 
   const validateFormData = (data: any) => {
@@ -66,9 +74,11 @@ function Addresses() {
     const phoneNumberRegex = /^\d{10}$/;
 
     if (!data.label?.trim()) errors.label = "Please enter address label";
-    if (!data.street?.trim()) errors.street = "Please enter your street";
+    if (!data.houseApartment?.trim()) errors.houseApartment = "Please enter house number and apartment name";
+    if (!data.streetName?.trim()) errors.streetName = "Please enter street name";
+    if (!data.locality?.trim()) errors.locality = "Please enter locality name";
+    if (!data.city?.trim()) errors.city = "Please enter your city";
     if (!data.state?.trim()) errors.state = "Please enter your state";
-    if (!data.district?.trim()) errors.district = "Please enter your district";
     if (!data.pincode?.trim()) errors.pincode = "Please enter your pincode";
     if (data.pincode && !pinRegex.test(data.pincode)) errors.pincode = "Please enter valid pincode";
     if (data.phoneNumber && !phoneNumberRegex.test(data.phoneNumber)) errors.phoneNumber = "Please enter valid phone number";
@@ -97,7 +107,11 @@ function Addresses() {
       phoneNumber: address.phone_number || "",
       state: address.state || "West Bengal",
       district: address.district || "",
-      street: address.street || "",
+      houseApartment: address.house_apartment || "",
+      streetName: address.street_name || "",
+      locality: address.locality || "",
+      city: address.city || address.district || "",
+      street: address.street || [address.house_apartment, address.street_name, address.locality].filter(Boolean).join(", "),
       landmark: address.landmark || "",
       pincode: address.pin_code || "",
       isDefault: Boolean(address.is_default),
@@ -140,8 +154,8 @@ function Addresses() {
                   {address.is_default && <span>Default</span>}
                 </div>
                 <p>{address.recipient_name || userInfo?.name || "Recipient"}</p>
-                <p>{address.street}</p>
-                <p>{address.landmark ? `${address.landmark}, ` : ""}{address.district}, {address.state} - {address.pin_code}</p>
+                <p>{address.street || [address.house_apartment, address.street_name, address.locality].filter(Boolean).join(", ")}</p>
+                <p>{address.landmark ? `${address.landmark}, ` : ""}{address.city || address.district}, {address.state} - {address.pin_code}</p>
                 {address.phone_number && <p>Phone: {address.phone_number}</p>}
                 <div className="address-card-actions">
                   {!address.is_default && (
@@ -175,12 +189,20 @@ function Addresses() {
             {orderErrors.phoneNumber && <p style={{ color: "red" }}>{orderErrors.phoneNumber}</p>}
           </div>
           <div className="form-field full-w">
-            <input type="text" name="street" className="form-control" placeholder="Street / House / Building" value={formData.street} onChange={(e) => updateFormData("street", e.target.value)} />
-            {orderErrors.street && <p style={{ color: "red" }}>{orderErrors.street}</p>}
+            <input type="text" name="houseApartment" className="form-control" placeholder="House number + apartment name" value={formData.houseApartment} onChange={(e) => updateFormData("houseApartment", e.target.value)} />
+            {orderErrors.houseApartment && <p style={{ color: "red" }}>{orderErrors.houseApartment}</p>}
           </div>
           <div className="form-field">
-            <input type="text" name="district" className="form-control" placeholder="District" value={formData.district} onChange={(e) => updateFormData("district", e.target.value)} />
-            {orderErrors.district && <p style={{ color: "red" }}>{orderErrors.district}</p>}
+            <input type="text" name="streetName" className="form-control" placeholder="Street name" value={formData.streetName} onChange={(e) => updateFormData("streetName", e.target.value)} />
+            {orderErrors.streetName && <p style={{ color: "red" }}>{orderErrors.streetName}</p>}
+          </div>
+          <div className="form-field">
+            <input type="text" name="locality" className="form-control" placeholder="Locality name" value={formData.locality} onChange={(e) => updateFormData("locality", e.target.value)} />
+            {orderErrors.locality && <p style={{ color: "red" }}>{orderErrors.locality}</p>}
+          </div>
+          <div className="form-field">
+            <input type="text" name="city" className="form-control" placeholder="City" value={formData.city} onChange={(e) => updateFormData("city", e.target.value)} />
+            {orderErrors.city && <p style={{ color: "red" }}>{orderErrors.city}</p>}
           </div>
           <div className="form-field">
             <input type="text" name="state" className="form-control" placeholder="State" value={formData.state} onChange={(e) => updateFormData("state", e.target.value)} />

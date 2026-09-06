@@ -20,11 +20,9 @@ function ProductDetails() {
     (state: any) => state.product
   );
   const { productId } = useParams();
-  console.log("isSuccess = ", isSuccess);
 
   useEffect(() => {
     return () => {
-      console.log("UNMOUNT CALLED");
       dispatch(resetCartStatus());
     };
   }, []);

@@ -32,7 +32,6 @@ function* userSaga(action: any): any {
     yield put({ type: SET_USER_INFO, payload: response?.data?.data });
     yield put(hideLoader());
   } catch (error: any) {
-    console.log("valid token ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
       "Please try again.";
@@ -57,7 +56,6 @@ function* logoutSaga(action: any): any {
       payload: "Signed out successfully",
     });
   } catch (e: any) {
-    console.log("logout error = ", e);
     yield put(hideLoader());
     // yield put({ type: USER_LOGOUT_ERROR });
     yield put({
@@ -78,7 +76,6 @@ function* getDistrictListSaga(action: any): any {
     yield put({ type: SET_DISTRICT_LIST, payload: response?.data?.data });
     yield put(hideLoader());
   } catch (error: any) {
-    console.log("valid token ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
       "Please try again.";
@@ -113,7 +110,6 @@ function* addUserAddressSaga(action: any): any {
     yield put(hideLoader());
     return true;
   } catch (error: any) {
-    console.log("valid token ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
       "Please try again.";
@@ -224,7 +220,6 @@ function* updateUserAccountSaga(action: any): any {
     yield put(hideLoader());
     return true;
   } catch (error: any) {
-    console.log("valid token ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
       "Please try again.";

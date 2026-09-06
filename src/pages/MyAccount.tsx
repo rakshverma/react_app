@@ -31,7 +31,6 @@ function MyAccount() {
     setActivePage("logout");
     dispatch(userLogoutAction());
     navigate("/");
-    console.log("sign out calledaaa");
   };
   return (
     <>

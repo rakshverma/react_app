@@ -4,13 +4,11 @@ function CategorySection({ categoryList, updateFilter }: any) {
   const porkIndex = categoryList.findIndex(
     (item: any) => item.name.toLowerCase() === "pork"
   );
-  console.log("porkIndex = ", categoryList);
   let list = [];
   if (porkIndex !== -1) {
     list = categoryList;
     const pork = list.splice(porkIndex, 1); // Remove 'pork' from the array
     list.push(pork[0]); // Push 'pork' to the end
-    console.log("PORK = ", list);
   } else {
     list = categoryList;
   }

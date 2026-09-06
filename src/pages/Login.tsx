@@ -33,7 +33,6 @@ function Login() {
   }, [isSuccess, isAuthenticated, navigate]);
 
   const onSubmit = (data: any) => {
-    console.log(data);
     if (forgotPassView) {
       dispatch(forgotPasswordAction(data));
     } else {

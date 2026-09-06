@@ -21,7 +21,6 @@ function* getAllcategorySaga(): any {
     yield put({ type: CATEGORY_SUCCESS, payload: true });
     yield put(hideLoader());
   } catch (error: any) {
-    console.log("get category ERROR = ", error);
     yield put({ type: SET_CATEGORY_INFO, payload: [] });
     yield put({
       type: SHOW_ERROR_MESSAGE,
@@ -49,7 +48,6 @@ function* getAllProductSaga(action: any): any {
     yield put({ type: PRODUCT_SUCCESS, payload: true });
     yield put(hideLoader());
   } catch (error: any) {
-    console.log("get product ERROR = ", error);
     yield put({ type: SET_PRODUCT_INFO, payload: [] });
     yield put({
       type: SHOW_ERROR_MESSAGE,
@@ -70,7 +68,6 @@ function* getProductReviewOnIdSaga(action: any): any {
     yield put(hideLoader());
     yield put({ type: PRODUCT_SUCCESS, payload: true });
   } catch (error: any) {
-    console.log("get product ERROR = ", error);
     yield put({ type: SET_PRODUCT_REVIEW, payload: [] });
     yield put({
       type: SHOW_ERROR_MESSAGE,

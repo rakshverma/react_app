@@ -77,6 +77,10 @@ function Checkout() {
     phone: "",
     state: "West Bengal",
     district: "",
+    houseApartment: "",
+    streetName: "",
+    locality: "",
+    city: "",
     street: "",
     landmark: "",
     pincode: pincode,
@@ -121,6 +125,10 @@ function Checkout() {
         phone: userInfo.phone_number,
         landmark: pincode === userInfo.pin_code ? userInfo.landmark : "",
         street: pincode === userInfo.pin_code ? userInfo.street : "",
+        houseApartment: "",
+        streetName: "",
+        locality: "",
+        city: pincode === userInfo.pin_code ? userInfo.district : "",
       }));
     } else {
       setFormData((state) => ({
@@ -128,6 +136,10 @@ function Checkout() {
         name: "",
         email: "",
         phone: "",
+        houseApartment: "",
+        streetName: "",
+        locality: "",
+        city: "",
         street: "",
         landmark: "",
         password: "",
@@ -152,10 +164,14 @@ function Checkout() {
   }, [dispatch, userInfo?.id]);
 
   const updateFormData = (name: string, value: string) => {
-    setFormData((state: any) => ({
-      ...state,
-      [name]: value,
-    }));
+    setFormData((state: any) => {
+      const nextState = { ...state, [name]: value };
+      if (["houseApartment", "streetName", "locality"].includes(name)) {
+        nextState.street = [nextState.houseApartment, nextState.streetName, nextState.locality].filter(Boolean).join(", ");
+      }
+      if (name === "city") nextState.district = value;
+      return nextState;
+    });
   };
 
   const selectSavedAddress = (address: any) => {
@@ -165,7 +181,11 @@ function Checkout() {
       phone: address.phone_number || state.phone,
       state: address.state || "West Bengal",
       district: address.district || "",
-      street: address.street || "",
+      houseApartment: address.house_apartment || "",
+      streetName: address.street_name || "",
+      locality: address.locality || "",
+      city: address.city || address.district || "",
+      street: address.street || [address.house_apartment, address.street_name, address.locality].filter(Boolean).join(", "),
       landmark: address.landmark || "",
       pincode: address.pin_code || pincode,
     }));
@@ -179,8 +199,6 @@ function Checkout() {
   };
 
   const updateorderDeliveryDate = (id: any, value: any) => {
-    console.log("date value = ", value);
-    console.log("date id = ", id);
     const formattedDate = value ? formatDate(value) : "";
     const nextDates: any = {};
     uniqueProducts.forEach((item: any) => {
@@ -203,6 +221,10 @@ function Checkout() {
       phone,
       state,
       district,
+      houseApartment,
+      streetName,
+      locality,
+      city,
       street,
       landmark,
       pincode,
@@ -220,8 +242,11 @@ function Checkout() {
     if (phone && !phoneNumberRegex.test(phone))
       errors.phone = "Please enter valid phone number";
     if (!state) errors.state = "Please select your state";
-    if (!district) errors.district = "Please enter your district";
-    if (!street) errors.street = "Please enter your street";
+    if (!city && !district) errors.city = "Please enter your city";
+    if (!houseApartment) errors.houseApartment = "Please enter house number and apartment name";
+    if (!streetName) errors.streetName = "Please enter street name";
+    if (!locality) errors.locality = "Please enter locality name";
+    if (!street && (!houseApartment || !streetName || !locality)) errors.street = "Please complete your address";
     if (!pincode) errors.pincode = "Please enter your pincode";
     if (pincode && !pinRegex.test(pincode))
       errors.pincode = "Please enter valid pincode";
@@ -279,7 +304,6 @@ function Checkout() {
   const submitOrderDetails = async (e: any) => {
     e.preventDefault();
     if (cartDetails.length) {
-      console.log("orderDeliveryDates = ", orderDeliveryDates);
       const errors = validateFormData(formData, orderDeliveryDates);
       if (Object.keys(errors).length > 0) {
         setOrderErrors(errors);
@@ -319,7 +343,6 @@ function Checkout() {
       return;
     }
   };
-  console.log("orderDeliveryDates === ", orderDeliveryDates);
   return (
     <>
       <HeadingSection heading={"Checkout page"} />

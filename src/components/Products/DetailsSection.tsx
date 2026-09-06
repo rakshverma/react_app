@@ -34,7 +34,6 @@ function DetailsSection({
     }
     return options;
   };
-  console.log("productDetails = ", productDetails);
   return (
     <div className="col-md-6 sm-padding my-auto">
       {productDetails && (

@@ -51,15 +51,12 @@ function* setCartItemSaga(action: any): any {
     if (userInfoString) {
       userInfo = JSON.parse(userInfoString);
     }
-
-    console.log("cartDetailscartDetails = ", cartDetails);
     const existingIndex = cartDetails.findIndex(
       (item: any) =>
         item.productId === action.payload.productId &&
         item.quantity === parseInt(action.payload.details.quantity) &&
         normalizeUnit(item.unit) === normalizeUnit(action.payload.details.unit)
     );
-    console.log("existingIndex = ", existingIndex);
     if (existingIndex !== -1) {
       if (
         parseInt(cartDetails[existingIndex].count) +
@@ -99,7 +96,6 @@ function* setCartItemSaga(action: any): any {
     yield put({ type: SHOW_SUCCESS_MESSAGE, payload: "Item added to cart" });
     yield put(hideLoader());
   } catch (e: any) {
-    console.log(e);
     yield put(hideLoader());
     // yield put({ type: SET_CART_ERROR, payload: "Unable to update cart." });
     yield put({ type: SHOW_ERROR_MESSAGE, payload: "Unable to update cart." });
@@ -254,7 +250,6 @@ function* updateCartItemSaga(action: any): any {
     }
     yield put(hideLoader());
   } catch (e) {
-    console.log(e);
     yield put(hideLoader());
     // yield put({
     //   type: SET_CART_ERROR,
@@ -311,7 +306,6 @@ function* removeExistingCartSaga(action: any): any {
       }
       yield put(getAllCategoryAction());
       yield put(getAllProductsAction(newPinCode));
-      console.log("shippingCostshippingCost = ", shippingCost);
       yield localStorage.setItem("pincode", newPinCode);
       yield put({
         type: SET_CART_DETAILS,
@@ -332,7 +326,6 @@ function* removeExistingCartSaga(action: any): any {
         "get",
         `/product/getShippingCostOnPin/${encodeURIComponent(`${action.payload}`.trim())}`
       );
-      console.log("shippingCostshippingCost = ", shippingCost);
       yield put({
         type: SET_SHIPPING_COST,
         payload: shippingCost?.data?.data || 0,
@@ -346,7 +339,6 @@ function* removeExistingCartSaga(action: any): any {
     }
     yield put(hideLoader());
   } catch (e: any) {
-    console.log("pincode update error = ", e);
     yield put(hideLoader());
     const errMsg =
       e?.response?.data?.message ||
@@ -372,7 +364,6 @@ function* getShippingCostSaga(action: any): any {
         "get",
         `/product/getShippingCostOnPin/${pinCode}`
       );
-      console.log("shippingCostshippingCost = ", shippingCost);
       yield put({
         type: SET_SHIPPING_COST,
         payload: shippingCost?.data?.data || 0,
@@ -380,7 +371,6 @@ function* getShippingCostSaga(action: any): any {
     }
     yield put(hideLoader());
   } catch (e: any) {
-    console.log("pincode update error = ", e);
     yield put(hideLoader());
     const errMsg =
       e?.response?.data?.message ||

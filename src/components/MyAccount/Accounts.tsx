@@ -9,7 +9,6 @@ const separateNameMethod = (fullName: string) => {
   return { firstName, lastName };
 };
 function Accounts({ userInfo }: any) {
-  console.log("userInfo = ", userInfo);
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     firstName: separateNameMethod(userInfo.name || "").firstName,
@@ -46,7 +45,6 @@ function Accounts({ userInfo }: any) {
     }
     dispatch(updateUserAccountAction(formData, userInfo.email));
   };
-  console.log("formData = ", formData);
   return (
     <div className="col-md-9">
       <div className="checkout-form-wrap py-4">

@@ -35,7 +35,6 @@ function* registerSaga(action: any): any {
     });
     yield put(hideLoader());
   } catch (error: any) {
-    console.log("REGISTER ERROR = ", error);
     yield put(hideLoader());
     const errMsg =
       error?.response?.data?.message ||
@@ -52,7 +51,6 @@ function* loginSaga(action: any): any {
   try {
     yield put(showLoader());
     const response = yield call(request, "post", "/auth/login", action.payload);
-    console.log("LOGIN RESPONSE = ", response);
     yield localStorage.setItem("token", response?.data?.data?.token || "");
     const { id, name, phone_number, email, status } = response?.data?.data;
     yield localStorage.setItem(
@@ -67,7 +65,6 @@ function* loginSaga(action: any): any {
     });
     yield put(hideLoader());
   } catch (error: any) {
-    console.log("LOGIN ERROR = ", error);
     const errMsg =
       error?.response?.data?.message ||
       "Please try again.";

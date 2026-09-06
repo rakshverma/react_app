@@ -14,7 +14,6 @@ function OrderDetailsView() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location?.search);
   const refId = searchParams.get("ref");
-  console.log("refId = ", refId);
   let product: any = [];
   if (orderList.length && refId) {
     product = orderList.filter((obj: any) => Number(obj.id) + 1000 === Number(refId));

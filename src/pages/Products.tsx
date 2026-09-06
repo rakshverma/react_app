@@ -29,7 +29,6 @@ function Products() {
   }, [dispatch, pinCode, navigationState?.updatePincode]);
 
   const updateFilter = (category: any) => {
-    console.log("category = ", category);
     setFilter(category);
   };
 

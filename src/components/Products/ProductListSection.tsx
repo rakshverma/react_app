@@ -33,8 +33,6 @@ function ProductListSection({ productList, filter }: any) {
       );
     });
   }
-
-  console.log("productList = ", list);
   return (
     <div className="row product-items">
       {list.map((item: any) => {
