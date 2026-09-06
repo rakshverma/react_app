@@ -270,8 +270,9 @@ function Checkout() {
         });
         return;
       } else {
-        let activeUser = userInfo;
-        const userId = activeUser.id;
+        const token = localStorage.getItem("token");
+        const activeUser = token && userInfo?.id ? userInfo : {};
+        const userId = activeUser.id || null;
         const isPincodeChanged = Boolean(activeUser.pin_code && `${formData.pincode || ""}`.trim() !== `${activeUser.pin_code || ""}`.trim());
         let shipping_cost = 0;
         if (Object.values(orderDeliveryDates).some(Boolean)) shipping_cost = shippingCost;
