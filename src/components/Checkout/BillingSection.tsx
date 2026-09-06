@@ -21,9 +21,7 @@ function BillingSection({
   addressList,
   onSelectSavedAddress,
   cartError,
-  accountError,
   isPlacingOrder,
-  isCreatingAccount,
   isOrderPlaced,
 }: any) {
   const {
@@ -39,9 +37,6 @@ function BillingSection({
     landmark,
     pincode,
     additionalNote,
-    password,
-    confPassword,
-    secretCode,
   } = formData;
   const dispatch = useDispatch();
   const {
@@ -127,50 +122,6 @@ function BillingSection({
       )}
 
       <form onSubmit={submitOrderDetails}>
-        {Object.keys(userInfo).length === 0 && (
-          <div className="checkout-form-wrap checkout-account-create mb-10 pb-1">
-            <h2>Create Account To Place Order</h2>
-            <p className="checkout-account-note">
-              Add a password and secret code first. Your order will be placed right after the account is created.
-            </p>
-            <div className="checkout-form">
-              <div className="form-field">
-                <input
-                  type="password"
-                  name="password"
-                  value={password || ""}
-                  className="form-control"
-                  placeholder="Password"
-                  onChange={(e) => updateFormData("password", e.target.value)}
-                />
-                {orderErrors.password && <p style={{ color: "red" }}>{orderErrors.password}</p>}
-              </div>
-              <div className="form-field">
-                <input
-                  type="password"
-                  name="confPassword"
-                  value={confPassword || ""}
-                  className="form-control"
-                  placeholder="Confirm Password"
-                  onChange={(e) => updateFormData("confPassword", e.target.value)}
-                />
-                {orderErrors.confPassword && <p style={{ color: "red" }}>{orderErrors.confPassword}</p>}
-              </div>
-              <div className="form-field full-w">
-                <input
-                  type="text"
-                  name="secretCode"
-                  value={secretCode || ""}
-                  className="form-control"
-                  placeholder="Your Secret Code"
-                  onChange={(e) => updateFormData("secretCode", e.target.value)}
-                />
-                {orderErrors.secretCode && <p style={{ color: "red" }}>{orderErrors.secretCode}</p>}
-              </div>
-            </div>
-            {accountError && <p style={{ color: "red" }}>{accountError}</p>}
-          </div>
-        )}
         <div className="checkout-form-wrap mb-10 pb-1">
           <h2>Billing Details</h2>
           {Object.keys(userInfo).length > 0 && addressList?.length > 0 && (
@@ -327,7 +278,6 @@ function BillingSection({
                 className="form-control"
                 placeholder="Post Code"
                 value={pincode || ""}
-                disabled={true}
                 onChange={(e) => {
                   updateFormData("pincode", e.target.value);
                 }}
@@ -427,8 +377,8 @@ function BillingSection({
               described in our <a href="#">privacy policy</a> .
             </p>
             {cartError && <p style={{ color: "red" }}>{cartError}</p>}
-            <button type="submit" className="default-btn" disabled={isCreatingAccount || isPlacingOrder || isOrderPlaced}>
-              {isCreatingAccount ? "Creating Account..." : isPlacingOrder ? "Processing..." : isOrderPlaced ? "Order Placed" : "Place Your Order"} <span></span>
+            <button type="submit" className="default-btn" disabled={isPlacingOrder || isOrderPlaced}>
+              {isPlacingOrder ? "Processing..." : isOrderPlaced ? "Order Placed" : "Place Your Order"} <span></span>
             </button>
           </div>
         </div>

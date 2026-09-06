@@ -7,6 +7,7 @@ import ProductsInfo from "../components/Checkout/ProductsInfo";
 import {
   getCartDetailsAction,
   getDistrictOnPinCodeAction,
+  getShippingCostAction,
 } from "../store/actions/cartAction";
 import { getUserAddressListAction } from "../store/actions/userAction";
 import {
@@ -15,11 +16,8 @@ import {
 } from "../store/actions/orderAction";
 import { getAllProductsAction } from "../store/actions/productAction";
 import { uploadUrl } from "../utils/axios";
-import { request } from "../utils/request";
 import {
-  SET_USER_INFO,
   SHOW_ERROR_MESSAGE,
-  SHOW_SUCCESS_MESSAGE,
 } from "../store/actionTypes";
 
 const getReceiptUrl = (receipt: any) => {
@@ -92,7 +90,6 @@ function Checkout() {
   });
   const [orderDeliveryDates, setOrderDeliveryDates] = useState<any>({});
   const [orderErrors, setOrderErrors] = useState({});
-  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
 
   const uniqueProducts = useMemo(
     () =>
@@ -230,9 +227,6 @@ function Checkout() {
       pincode,
       deliveryDay,
       additionalNote,
-      password,
-      confPassword,
-      secretCode,
     } = formData;
     if (!name) errors.name = "Please enter your name";
     if (!email) errors.email = "Please enter your email";
@@ -250,13 +244,6 @@ function Checkout() {
     if (!pincode) errors.pincode = "Please enter your pincode";
     if (pincode && !pinRegex.test(pincode))
       errors.pincode = "Please enter valid pincode";
-    if (Object.keys(userInfo).length === 0) {
-      if (!password || password.length < 6) errors.password = "Password should be minimum 6 characters";
-      if (!confPassword) errors.confPassword = "Please confirm your password";
-      if (password && confPassword && password !== confPassword) errors.confPassword = "Passwords do not match";
-      if (!secretCode || secretCode.trim().length < 4) errors.secretCode = "Secret code should be minimum 4 characters";
-    }
-
     uniqueProducts.forEach((item: any) => {
       if (!orderDeliveryDates[item.productId]) {
         errors.deliveryDate = "Please select one delivery date for the order";
@@ -269,36 +256,6 @@ function Checkout() {
     }
 
     return errors;
-  };
-
-  const registerBeforeOrder = async () => {
-    setIsCreatingAccount(true);
-    try {
-      const response = await request("post", "/auth/register", {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password,
-        secretCode: formData.secretCode,
-      });
-      const user = response?.data?.data || {};
-      localStorage.setItem("token", user.token || "");
-      const { id, name, phone_number, email, status } = user;
-      localStorage.setItem("userinfo", JSON.stringify({ id, name, phone_number, email, status }));
-      dispatch({ type: SET_USER_INFO, payload: user });
-      dispatch({
-        type: SHOW_SUCCESS_MESSAGE,
-        payload: "Account created. Placing your order now.",
-      });
-      return user;
-    } catch (error: any) {
-      const errMsg = error?.response?.data?.message || "Unable to create account before placing order.";
-      dispatch({ type: SHOW_ERROR_MESSAGE, payload: errMsg });
-      setOrderErrors((state: any) => ({ ...state, account: errMsg }));
-      return null;
-    } finally {
-      setIsCreatingAccount(false);
-    }
   };
 
   const submitOrderDetails = async (e: any) => {
@@ -314,13 +271,8 @@ function Checkout() {
         return;
       } else {
         let activeUser = userInfo;
-        if (Object.keys(activeUser).length === 0) {
-          const registeredUser = await registerBeforeOrder();
-          if (!registeredUser?.id) return;
-          activeUser = registeredUser;
-        }
         const userId = activeUser.id;
-        const isPincodeChanged = Boolean(activeUser.pin_code && pincode !== activeUser.pin_code);
+        const isPincodeChanged = Boolean(activeUser.pin_code && `${formData.pincode || ""}`.trim() !== `${activeUser.pin_code || ""}`.trim());
         let shipping_cost = 0;
         if (Object.values(orderDeliveryDates).some(Boolean)) shipping_cost = shippingCost;
         setOrderErrors({});
@@ -343,6 +295,15 @@ function Checkout() {
       return;
     }
   };
+
+  useEffect(() => {
+    const nextPincode = `${formData.pincode || ""}`.trim();
+    if (/^\d{6}$/.test(nextPincode)) {
+      dispatch(getDistrictOnPinCodeAction(nextPincode));
+      dispatch(getShippingCostAction(nextPincode));
+      dispatch(getAllProductsAction(nextPincode));
+    }
+  }, [dispatch, formData.pincode]);
   return (
     <>
       <HeadingSection heading={"Checkout page"} />
@@ -363,9 +324,7 @@ function Checkout() {
               addressList={addressList}
               onSelectSavedAddress={selectSavedAddress}
               cartError={(orderErrors as any).cart}
-              accountError={(orderErrors as any).account}
               isPlacingOrder={isPlacingOrder}
-              isCreatingAccount={isCreatingAccount}
               isOrderPlaced={isSuccess}
             />
             <ProductsInfo
@@ -376,14 +335,14 @@ function Checkout() {
           </div>
         </div>
       </section>
-      {(isCreatingAccount || isPlacingOrder || isSuccess) && (
+      {(isPlacingOrder || isSuccess) && (
         <div className="order-processing-overlay" role="status" aria-live="polite">
           <div className="order-processing-card">
             {!isSuccess ? (
               <>
                 <div className="order-processing-spinner"></div>
-                <h3>{isCreatingAccount ? "Creating Your Account" : orderProgressStep || "Processing Your Order"}</h3>
-                <p>{isCreatingAccount ? "Please wait while we create your account before placing the order." : "Please wait while we confirm your cart and save your order."}</p>
+                <h3>{orderProgressStep || "Processing Your Order"}</h3>
+                <p>Please wait while we confirm your cart and save your order.</p>
               </>
             ) : (
               <>
