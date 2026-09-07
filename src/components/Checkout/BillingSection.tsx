@@ -23,6 +23,7 @@ function BillingSection({
   cartError,
   isPlacingOrder,
   isOrderPlaced,
+  landingPincode,
 }: any) {
   const {
     name,
@@ -124,6 +125,10 @@ function BillingSection({
       <form onSubmit={submitOrderDetails}>
         <div className="checkout-form-wrap mb-10 pb-1">
           <h2>Billing Details</h2>
+          <div className="checkout-pincode-reminder" role="status">
+            Users pincode at landing page should be same as shipment pincode for placing order.
+            {landingPincode && <strong> Current landing pincode: {landingPincode}</strong>}
+          </div>
           {Object.keys(userInfo).length > 0 && addressList?.length > 0 && (
             <div className="checkout-address-picker">
               {addressList.map((address: any) => (

@@ -45,6 +45,8 @@ const normalizeUnit = (unit: any) => {
   return normalized;
 };
 
+const PINCODE_MISMATCH_MESSAGE = "Go to change pincode option and enter the pincode which has to be same as shipment pincode";
+
 const getUnavailableCartItems = (cartDetails: any[], productList: any[]) => {
   return cartDetails.filter((cartItem: any) => {
     const product = productList.find((item: any) => `${item.id}` === `${cartItem.productId}`);
@@ -250,9 +252,16 @@ function Checkout() {
       }
     });
 
+    const landingPincode = `${localStorage.getItem("pincode") || ""}`.trim();
+    const shippingPincode = `${pincode || ""}`.trim();
+    if (landingPincode && shippingPincode && landingPincode !== shippingPincode) {
+      errors.cart = PINCODE_MISMATCH_MESSAGE;
+      return errors;
+    }
+
     const unavailableItems = getUnavailableCartItems(cartDetails, productList);
     if (unavailableItems.length) {
-      errors.cart = `${unavailableItems.map((item: any) => item.name || "An item").join(", ")} is not available for your selected pincode. Please remove it from cart.`;
+      errors.cart = PINCODE_MISMATCH_MESSAGE;
     }
 
     return errors;
@@ -327,6 +336,7 @@ function Checkout() {
               cartError={(orderErrors as any).cart}
               isPlacingOrder={isPlacingOrder}
               isOrderPlaced={isSuccess}
+              landingPincode={pincode}
             />
             <ProductsInfo
               cartDetails={cartDetails}

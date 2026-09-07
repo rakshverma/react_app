@@ -719,6 +719,35 @@ img {
   line-height: 1.35;
 }
 
+.checkout-pincode-reminder {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid rgba(211, 58, 28, 0.28);
+  border-radius: 8px;
+  background: #fff8f4;
+  color: #9c2d18;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+  animation: checkout-pincode-blink 1.35s ease-in-out infinite;
+}
+
+.checkout-pincode-reminder strong {
+  color: #1d2433;
+  white-space: nowrap;
+}
+
+@keyframes checkout-pincode-blink {
+  0%, 100% {
+    border-color: rgba(211, 58, 28, 0.26);
+    box-shadow: 0 0 0 rgba(211, 58, 28, 0);
+  }
+  50% {
+    border-color: rgba(211, 58, 28, 0.72);
+    box-shadow: 0 0 0 4px rgba(211, 58, 28, 0.08);
+  }
+}
+
 @media (max-width: 767px) {
   .address-book-panel {
     padding-left: 16px !important;
