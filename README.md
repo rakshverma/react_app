@@ -1,46 +1,96 @@
-# Getting Started with Create React App
+# JhatkaByte Customer Website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This folder contains the React customer website for browsing products, selecting pincode, cart, checkout, registration, login, address book, and orders.
 
-## Available Scripts
+## Before Deployment
 
-In the project directory, you can run:
+1. Deploy the backend first.
 
-### `npm start`
+   The website needs the backend API URL before it is built.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+2. Configure environment variables.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+   Copy `.env.example` and set production values in your hosting provider. Do not commit `.env`.
 
-### `npm test`
+   Required values:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```env
+   REACT_APP_API_BASE_URL=https://your-backend-domain.com
+   REACT_APP_UPLOAD_URL=https://your-backend-domain.com/uploads
+   ```
 
-### `npm run build`
+3. Make sure backend CORS allows the customer website domain.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   In the backend env, include the deployed website URL:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```env
+   CORS_ORIGINS=https://your-customer-domain.com
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. Install dependencies.
 
-### `npm run eject`
+   ```bash
+   npm ci
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+5. Build the website.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```bash
+   npm run build
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+6. Check the main website routes after deployment.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+   ```text
+   /
+   /products
+   /cart
+   /checkout
+   /login
+   /signup
+   /my-account
+   ```
 
-## Learn More
+## Docker Deployment
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The Dockerfile builds the React app and serves it with nginx.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Build with direct backend URLs:
+
+```bash
+docker build \
+  --build-arg REACT_APP_API_BASE_URL=https://your-backend-domain.com \
+  --build-arg REACT_APP_UPLOAD_URL=https://your-backend-domain.com/uploads \
+  -t jhatkabyte-web .
+```
+
+Run:
+
+```bash
+docker run -p 8080:8080 jhatkabyte-web
+```
+
+If the website container should proxy API calls through nginx, build with the default `/api` and `/uploads` values and set:
+
+```env
+BACKEND_ORIGIN=http://your-backend-service:3000
+NGINX_PORT=8080
+```
+
+## Useful Commands
+
+```bash
+npm start
+npm run build
+```
+
+## Final Checklist
+
+- Backend is already deployed and healthy.
+- Website env points to the correct backend.
+- Backend `CORS_ORIGINS` includes the website domain.
+- `npm run build` passes.
+- Pincode check works.
+- Product list loads for a serviceable pincode.
+- Cart and checkout work for guest and registered users.
+- Login, signup, password reset with secret code, address book, and order cancellation work.
